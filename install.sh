@@ -41,6 +41,8 @@ PKGS=(
     network-manager-applet bluez bluez-utils blueman
     # bar helpers
     jq socat libnotify pacman-contrib btop git
+    # shell prompt
+    zsh starship
     # theme: GTK, icons, Qt, fonts
     adw-gtk-theme papirus-icon-theme qt6ct ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji
 )
