@@ -1,0 +1,44 @@
+// ~/.config/waybar/config.jsonc — Hyprland version
+{
+    "layer": "top",
+    "position": "top",
+    "height": 30,
+    "margin": "6 10 0 10",
+
+    "modules-left":   ["hyprland/workspaces", "hyprland/submap"],
+    "modules-center": ["hyprland/window"],
+    "modules-right":  ["network", "pulseaudio", "backlight", "battery", "clock", "tray"],
+
+    "hyprland/workspaces": {
+        "format": "{id}",
+        "on-click": "activate",
+        "persistent-workspaces": { "*": 5 }
+    },
+    "hyprland/submap": { "format": "✦ {}" },
+    "hyprland/window": { "max-length": 60, "separate-outputs": true },
+
+    "network": {
+        "format-wifi": "📶",
+        "format-ethernet": "🔌",
+        "format-disconnected": "📵",
+        "tooltip-format-wifi": "{essid} ({signalStrength}%)",
+        "on-click": "nm-connection-editor"
+    },
+    "pulseaudio": {
+        "format": "🔊 {volume}%",
+        "format-muted": "🔇",
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "scroll-step": 5
+    },
+    "backlight": { "format": "☀️ {percent}%" },
+    "battery": {
+        "states": { "warning": 25, "critical": 12 },
+        "format": "🔋 {capacity}%",
+        "format-charging": "⚡ {capacity}%"
+    },
+    "clock": {
+        "format": "{:%a %d %b  %H:%M}",
+        "tooltip-format": "<tt>{calendar}</tt>"
+    },
+    "tray": { "spacing": 8 }
+}
