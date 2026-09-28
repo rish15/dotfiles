@@ -1,44 +1,197 @@
-// ~/.config/waybar/config.jsonc — Hyprland version
+// ~/.config/waybar/config.jsonc — Catppuccin Mocha floating islands
 {
     "layer": "top",
     "position": "top",
-    "height": 30,
-    "margin": "6 10 0 10",
+    "height": 38,
+    "margin-top": 8,
+    "margin-left": 12,
+    "margin-right": 12,
+    "spacing": 0,
+    "reload_style_on_change": true,
 
-    "modules-left":   ["hyprland/workspaces", "hyprland/submap"],
-    "modules-center": ["hyprland/window"],
-    "modules-right":  ["network", "pulseaudio", "backlight", "battery", "clock", "tray"],
+    "modules-left":   ["custom/launcher", "hyprland/workspaces", "hyprland/submap", "mpris"],
+    "modules-center": ["clock"],
+    "modules-right":  [
+        "group/system",
+        "pulseaudio",
+        "backlight",
+        "network",
+        "bluetooth",
+        "battery",
+        "custom/updates",
+        "idle_inhibitor",
+        "custom/nightlight",
+        "tray",
+        "custom/notification",
+        "custom/power"
+    ],
+
+    // ---------- left ----------
+    "custom/launcher": {
+        "format": "",
+        "tooltip-format": "Apps  ·  right-click: clipboard",
+        "on-click": "rofi -show drun",
+        "on-click-right": "cliphist list | rofi -dmenu -p ' Clipboard' | cliphist decode | wl-copy"
+    },
 
     "hyprland/workspaces": {
-        "format": "{id}",
+        "format": "{icon}",
+        "format-icons": {
+            "active": "",
+            "urgent": "",
+            "default": "",
+            "empty": ""
+        },
+        "persistent-workspaces": { "1": [], "2": [], "3": [], "4": [], "5": [] },
         "on-click": "activate",
-        "persistent-workspaces": { "*": 5 }
+        "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
+        "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'"
     },
-    "hyprland/submap": { "format": "✦ {}" },
-    "hyprland/window": { "max-length": 60, "separate-outputs": true },
+
+    "hyprland/submap": { "format": "  {}", "tooltip": false },
+
+    "mpris": {
+        "format": "{player_icon}  {title} <span color='#6c7086'>·</span> {artist}",
+        "format-paused": "{status_icon}  <i>{title}</i>",
+        "player-icons": { "default": "", "spotify": "", "firefox": "", "chromium": "" },
+        "status-icons": { "paused": "" },
+        "title-len": 28,
+        "artist-len": 18,
+        "tooltip-format": "{player}: {title} — {artist}\nclick: play/pause · scroll: next/prev",
+        "on-scroll-up": "playerctl next",
+        "on-scroll-down": "playerctl previous"
+    },
+
+    // ---------- center ----------
+    "clock": {
+        "format": "  {:%H:%M}",
+        "format-alt": "  {:%a, %d %b %Y}",
+        "tooltip-format": "<tt>{calendar}</tt>",
+        "calendar": {
+            "mode": "month",
+            "mode-mon-col": 3,
+            "on-scroll": 1,
+            "format": {
+                "months":   "<span color='#cba6f7'><b>{}</b></span>",
+                "weekdays": "<span color='#fab387'><b>{}</b></span>",
+                "days":     "<span color='#cdd6f4'>{}</span>",
+                "today":    "<span color='#1e1e2e' background='#f5c2e7'><b> {} </b></span>"
+            }
+        },
+        "actions": { "on-scroll-up": "shift_down", "on-scroll-down": "shift_up", "on-click-right": "mode" }
+    },
+
+    // ---------- right ----------
+    "group/system": {
+        "orientation": "inherit",
+        "drawer": { "transition-duration": 400, "children-class": "drawer-child", "transition-left-to-right": false },
+        "modules": ["cpu", "memory", "temperature", "disk"]
+    },
+    "cpu":         { "format": "  {usage}%", "interval": 3, "tooltip-format": "CPU · hover to expand", "on-click": "alacritty -e btop" },
+    "memory":      { "format": "  {percentage}%", "interval": 5, "tooltip-format": "{used:0.1f} / {total:0.1f} GiB used" },
+    "temperature": { "format": "  {temperatureC}°", "critical-threshold": 85, "interval": 5 },
+    "disk":        { "format": "  {percentage_used}%", "path": "/", "interval": 60, "tooltip-format": "{used} / {total} on /" },
+
+    "pulseaudio": {
+        "format": "{icon}  {volume}%  {format_source}",
+        "format-muted": "  muted  {format_source}",
+        "format-source": "",
+        "format-source-muted": "<span color='#f38ba8'></span>",
+        "format-icons": { "headphone": "", "default": ["", "", ""] },
+        "scroll-step": 5,
+        "on-click": "pavucontrol",
+        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "on-click-middle": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle",
+        "tooltip-format": "{desc}\nclick: mixer · right: mute · middle: mic"
+    },
+
+    "backlight": {
+        "format": "  {percent}%",
+        "on-scroll-up": "brightnessctl set 5%+",
+        "on-scroll-down": "brightnessctl set 5%-",
+        "tooltip": false
+    },
 
     "network": {
-        "format-wifi": "📶",
-        "format-ethernet": "🔌",
-        "format-disconnected": "📵",
-        "tooltip-format-wifi": "{essid} ({signalStrength}%)",
+        "format-wifi": "",
+        "format-ethernet": "",
+        "format-disconnected": "",
+        "tooltip-format-wifi": "{essid}  ·  {signalStrength}%\n{ipaddr}    {bandwidthDownBytes}   {bandwidthUpBytes}",
+        "tooltip-format-ethernet": "{ifname}  ·  {ipaddr}\n {bandwidthDownBytes}   {bandwidthUpBytes}",
+        "tooltip-format-disconnected": "Offline",
+        "interval": 5,
         "on-click": "nm-connection-editor"
     },
-    "pulseaudio": {
-        "format": "🔊 {volume}%",
-        "format-muted": "🔇",
-        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
-        "scroll-step": 5
+
+    "bluetooth": {
+        "format": "",
+        "format-disabled": "",
+        "format-connected": "  {num_connections}",
+        "tooltip-format-connected": "{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}  {device_battery_percentage}%",
+        "on-click": "blueman-manager"
     },
-    "backlight": { "format": "☀️ {percent}%" },
+
     "battery": {
         "states": { "warning": 25, "critical": 12 },
-        "format": "🔋 {capacity}%",
-        "format-charging": "⚡ {capacity}%"
+        "format": "{icon}  {capacity}%",
+        "format-charging": "  {capacity}%",
+        "format-plugged": "  {capacity}%",
+        "format-icons": ["", "", "", "", ""],
+        "tooltip-format": "{timeTo}  ·  {power:.1f} W"
     },
-    "clock": {
-        "format": "{:%a %d %b  %H:%M}",
-        "tooltip-format": "<tt>{calendar}</tt>"
+
+    "custom/updates": {
+        "exec": "~/.config/waybar/scripts/updates.sh",
+        "return-type": "json",
+        "interval": 1800,
+        "format": "  {}",
+        "on-click": "alacritty -e sh -c 'paru -Syu || sudo pacman -Syu; echo; read -p \"Done — press enter\"'; pkill -RTMIN+9 waybar",
+        "signal": 9
     },
-    "tray": { "spacing": 8 }
+
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": { "activated": "", "deactivated": "" },
+        "tooltip-format-activated": "Staying awake",
+        "tooltip-format-deactivated": "Idle / lock allowed"
+    },
+
+    "custom/nightlight": {
+        "exec": "~/.config/hypr/scripts/nightlight.sh status",
+        "return-type": "json",
+        "interval": "once",
+        "signal": 8,
+        "format": "{}",
+        "on-click": "~/.config/hypr/scripts/nightlight.sh toggle"
+    },
+
+    "tray": { "icon-size": 16, "spacing": 10 },
+
+    "custom/notification": {
+        "format": "{icon}",
+        "format-icons": {
+            "notification": "<span foreground='#f38ba8'><sup>●</sup></span>",
+            "none": "",
+            "dnd-notification": "<span foreground='#f38ba8'><sup>●</sup></span>",
+            "dnd-none": "",
+            "inhibited-notification": "<span foreground='#f38ba8'><sup>●</sup></span>",
+            "inhibited-none": "",
+            "dnd-inhibited-notification": "<span foreground='#f38ba8'><sup>●</sup></span>",
+            "dnd-inhibited-none": ""
+        },
+        "return-type": "json",
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        "on-click": "swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "tooltip-format": "Control center · right-click: do not disturb",
+        "escape": true
+    },
+
+    "custom/power": {
+        "format": "",
+        "tooltip-format": "Power menu",
+        "on-click": "~/.config/hypr/scripts/powermenu.sh"
+    }
 }

@@ -1,34 +1,143 @@
+@import "mocha.css";
+
 * {
     font-family: "JetBrainsMono Nerd Font", "Noto Color Emoji", sans-serif;
     font-size: 13px;
+    font-weight: 600;
     border: none;
+    border-radius: 0;
     min-height: 0;
 }
 
 window#waybar {
-    background-color: rgba(30, 30, 46, 0.85);
-    color: #cdd6f4;
-    border-radius: 10px;
+    background: transparent;
+    color: @text;
 }
 
+tooltip {
+    background: alpha(@base, 0.96);
+    border: 1px solid alpha(@mauve, 0.5);
+    border-radius: 12px;
+}
+tooltip label { color: @text; padding: 4px 6px; }
+
+/* ---------- islands ---------- */
+.modules-left,
+.modules-center,
+.modules-right {
+    background: alpha(@base, 0.78);
+    border: 1px solid alpha(@surface1, 0.8);
+    border-radius: 16px;
+    padding: 0 6px;
+}
+
+#custom-launcher, #workspaces, #submap, #mpris, #clock,
+#cpu, #memory, #temperature, #disk,
+#pulseaudio, #backlight, #network, #bluetooth, #battery,
+#custom-updates, #idle_inhibitor, #custom-nightlight, #tray,
+#custom-notification, #custom-power {
+    padding: 0 10px;
+    margin: 5px 1px;
+    border-radius: 11px;
+    transition: all 0.25s ease;
+}
+
+#custom-launcher:hover, #mpris:hover, #clock:hover,
+#cpu:hover, #memory:hover, #temperature:hover, #disk:hover,
+#pulseaudio:hover, #backlight:hover, #network:hover, #bluetooth:hover, #battery:hover,
+#custom-updates:hover, #idle_inhibitor:hover, #custom-nightlight:hover,
+#custom-notification:hover {
+    background: alpha(@surface0, 0.9);
+}
+
+/* ---------- left ---------- */
+#custom-launcher {
+    color: @blue;
+    font-size: 17px;
+    padding: 0 12px 0 10px;
+}
+
+#workspaces { padding: 0 4px; }
 #workspaces button {
-    padding: 0 8px;
-    color: #6c7086;
-    border-radius: 8px;
+    color: @overlay0;
+    padding: 0 6px;
+    margin: 6px 2px;
+    border-radius: 9px;
+    font-size: 11px;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+#workspaces button.empty { color: @surface2; }
+#workspaces button:hover {
+    color: @lavender;
+    background: alpha(@surface1, 0.7);
 }
 #workspaces button.active {
-    color: #1e1e2e;
-    background-color: #89b4fa;
+    color: @crust;
+    background: linear-gradient(90deg, @mauve, @blue);
+    padding: 0 16px;
 }
-#workspaces button:hover {
-    background: rgba(137, 180, 250, 0.25);
-}
-
-#submap { color: #f9e2af; padding: 0 8px; }
-
-#network, #pulseaudio, #backlight, #battery, #clock, #tray {
-    padding: 0 10px;
+#workspaces button.urgent {
+    color: @crust;
+    background: @red;
 }
 
-#battery.warning  { color: #f9e2af; }
-#battery.critical { color: #f38ba8; }
+#submap {
+    color: @crust;
+    background: @peach;
+}
+
+#mpris { color: @green; }
+#mpris.paused { color: @overlay1; }
+
+/* ---------- center ---------- */
+#clock {
+    color: @text;
+    font-weight: 700;
+    padding: 0 14px;
+}
+
+/* ---------- right ---------- */
+#cpu         { color: @sapphire; }
+#memory      { color: @mauve; }
+#temperature { color: @peach; }
+#temperature.critical { color: @red; }
+#disk        { color: @teal; }
+.drawer-child { color: @subtext0; }
+
+#pulseaudio        { color: @pink; }
+#pulseaudio.muted  { color: @overlay0; }
+#backlight         { color: @yellow; }
+#network           { color: @teal; }
+#network.disconnected { color: @red; }
+#bluetooth         { color: @blue; }
+#bluetooth.connected { color: @sapphire; }
+
+#battery           { color: @green; }
+#battery.charging, #battery.plugged { color: @teal; }
+#battery.warning:not(.charging) { color: @peach; }
+#battery.critical:not(.charging) {
+    color: @crust;
+    background: @red;
+    animation: blink 1s steps(2) infinite alternate;
+}
+@keyframes blink { to { background: alpha(@red, 0.4); color: @red; } }
+
+#custom-updates         { color: @lavender; }
+#custom-updates.none    { color: @overlay0; }
+#idle_inhibitor         { color: @overlay1; }
+#idle_inhibitor.activated { color: @yellow; }
+#custom-nightlight      { color: @overlay1; }
+#custom-nightlight.on   { color: @peach; }
+
+#tray { padding: 0 8px; }
+#tray > .needs-attention { background: alpha(@red, 0.3); }
+
+#custom-notification { color: @lavender; }
+
+#custom-power {
+    color: @crust;
+    background: @red;
+    padding: 0 12px;
+    margin-right: 0;
+}
+#custom-power:hover { background: @maroon; }

@@ -32,16 +32,17 @@ run()  { if [[ $DRY == 1 ]]; then echo "  [dry] $*"; else "$@"; fi; }
 PKGS=(
     # compositor + session
     hyprland hypridle hyprlock xdg-desktop-portal-hyprland polkit-kde-agent
-    # bar / launcher / terminal
-    waybar rofi-wayland alacritty
+    # bar / launcher / notifications / terminal
+    waybar rofi-wayland swaync alacritty
     # wallpaper, clipboard, screenshots
     swaybg cliphist wl-clipboard grim slurp flameshot
-    # night light, brightness, audio, network
-    gammastep brightnessctl pipewire wireplumber pasystray network-manager-applet
-    # misc
-    dex jq socat libnotify git
-    # fonts (waybar icons)
-    ttf-jetbrains-mono-nerd noto-fonts-emoji
+    # night light, brightness, audio, media, network, bluetooth
+    gammastep brightnessctl pipewire wireplumber pavucontrol playerctl
+    network-manager-applet bluez bluez-utils blueman
+    # bar helpers
+    jq socat libnotify pacman-contrib btop git
+    # theme: GTK, icons, Qt, fonts
+    adw-gtk-theme papirus-icon-theme qt6ct ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji
 )
 
 # 1. Clone (or update) the repo when run via curl
@@ -82,26 +83,36 @@ for src in "$DOTFILES"/config/*; do
 done
 
 # 4. Scripts executable, folders the config expects
-run chmod +x "$DOTFILES"/config/hypr/scripts/*.sh
+run chmod +x "$DOTFILES"/config/hypr/scripts/*.sh "$DOTFILES"/config/waybar/scripts/*.sh
 run mkdir -p "$HOME/Pictures"
 
-if [[ ! -f "$HOME/Pictures/wallpaper.jpg" ]]; then
-    if [[ -f "$DOTFILES/wallpaper.jpg" ]]; then
-        run cp "$DOTFILES/wallpaper.jpg" "$HOME/Pictures/wallpaper.jpg"
-    else
-        warn "No ~/Pictures/wallpaper.jpg — drop one there (or add wallpaper.jpg to the repo)"
-    fi
+# 5. Theme: GTK apps + icons (Catppuccin colors come from gtk-3.0/gtk-4.0 gtk.css)
+if command -v gsettings >/dev/null; then
+    log "Applying GTK theme"
+    run gsettings set org.gnome.desktop.interface gtk-theme    'adw-gtk3-dark'
+    run gsettings set org.gnome.desktop.interface icon-theme   'Papirus-Dark'
+    run gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+    run gsettings set org.gnome.desktop.interface font-name    'Noto Sans 10'
+    run gsettings set org.gnome.desktop.interface monospace-font-name 'JetBrainsMono Nerd Font 11'
 fi
 
-# 5. Audio services (usually already on in CachyOS)
-run systemctl --user enable --now pipewire pipewire-pulse wireplumber 2>/dev/null || true
+# Noctalia (CachyOS's default shell) draws its own bar + wallpaper on top of ours
+if pgrep -f noctalia >/dev/null; then
+    warn "Noctalia shell is running — it will overlap waybar. Disable its autostart, e.g.:"
+    warn "  grep -ril noctalia ~/.config/autostart /etc/xdg/autostart ~/.config/systemd/user 2>/dev/null"
+fi
 
-# 6. Reload if we're already inside Hyprland
+# 6. Services
+run systemctl --user enable --now pipewire pipewire-pulse wireplumber 2>/dev/null || true
+run sudo systemctl enable --now bluetooth 2>/dev/null || true
+
+# 7. Reload if we're already inside Hyprland
 if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
-    log "Reloading Hyprland + waybar"
+    log "Reloading Hyprland, waybar, swaync"
     run hyprctl reload >/dev/null
     run pkill waybar || true
-    [[ $DRY == 1 ]] || (waybar >/dev/null 2>&1 & disown)
+    run pkill swaync || true
+    [[ $DRY == 1 ]] || { (waybar >/dev/null 2>&1 & disown); (swaync >/dev/null 2>&1 & disown); }
 fi
 
 log "Done. Log out and pick Hyprland at the login screen if you're not in it yet."

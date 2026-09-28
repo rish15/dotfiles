@@ -1,0 +1,79 @@
+* {
+    base:     #1e1e2eee;
+    mantle:   #181825;
+    surface0: #313244;
+    surface1: #45475a;
+    overlay0: #6c7086;
+    text:     #cdd6f4;
+    mauve:    #cba6f7;
+    blue:     #89b4fa;
+    crust:    #11111b;
+
+    background-color: transparent;
+    text-color:       @text;
+    margin:  0;
+    padding: 0;
+    spacing: 0;
+}
+
+window {
+    width:            640px;
+    background-color: @base;
+    border:           1px;
+    border-color:     @surface1;
+    border-radius:    18px;
+    location:         center;
+    anchor:           center;
+}
+
+mainbox {
+    padding:  14px;
+    spacing:  12px;
+    children: [ inputbar, listview, mode-switcher ];
+}
+
+inputbar {
+    background-color: @mantle;
+    border-radius:    12px;
+    padding:          12px 14px;
+    spacing:          10px;
+    children:         [ prompt, entry ];
+}
+prompt { text-color: @mauve; }
+entry  { placeholder: "Search…"; placeholder-color: @overlay0; cursor: text; }
+
+listview {
+    lines:   8;
+    columns: 1;
+    spacing: 4px;
+    fixed-height: true;
+    scrollbar: false;
+}
+
+element {
+    padding:       10px 12px;
+    spacing:       12px;
+    border-radius: 10px;
+}
+element normal.normal, element alternate.normal { background-color: transparent; }
+element selected.normal {
+    background-color: @surface0;
+    text-color:       @mauve;
+}
+element-icon { size: 22px; }
+element-text { text-color: inherit; vertical-align: 0.5; }
+
+mode-switcher { spacing: 8px; }
+button {
+    padding:          8px;
+    border-radius:    10px;
+    background-color: @mantle;
+    text-color:       @overlay0;
+}
+button selected {
+    background-color: @surface0;
+    text-color:       @blue;
+}
+
+message { background-color: @mantle; border-radius: 10px; padding: 10px; }
+textbox { text-color: @text; }

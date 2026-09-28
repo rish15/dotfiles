@@ -1,0 +1,152 @@
+@import "mocha.css";
+
+* {
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 13px;
+}
+
+/* ---------- popups ---------- */
+.notification-row { outline: none; }
+.notification-row:focus, .notification-row:hover { background: transparent; }
+
+.notification {
+    background: alpha(@base, 0.92);
+    border: 1px solid alpha(@surface1, 0.9);
+    border-radius: 14px;
+    margin: 6px 10px;
+    padding: 0;
+    box-shadow: 0 4px 14px alpha(@crust, 0.6);
+}
+.notification.critical { border-color: @red; }
+.notification.low      { border-color: alpha(@surface0, 0.9); }
+
+.notification-content { padding: 10px; }
+.summary   { color: @text; font-weight: 700; }
+.time      { color: @overlay1; font-size: 11px; margin-right: 24px; }
+.body      { color: @subtext0; }
+.image     { border-radius: 10px; margin-right: 8px; }
+
+.close-button {
+    background: @surface0;
+    color: @text;
+    border-radius: 99px;
+    margin: 8px;
+    min-width: 22px;
+    min-height: 22px;
+}
+.close-button:hover { background: @red; color: @crust; }
+
+.notification-action, .notification-default-action {
+    background: transparent;
+    color: @text;
+    border: none;
+    border-radius: 12px;
+}
+.notification-default-action:hover, .notification-action:hover { background: alpha(@surface0, 0.7); }
+.notification-action {
+    border-top: 1px solid alpha(@surface1, 0.8);
+    border-radius: 0;
+}
+
+/* OSD progress (volume / brightness) */
+.notification progressbar trough {
+    background: @surface0;
+    border-radius: 99px;
+    min-height: 6px;
+}
+.notification progressbar progress {
+    background: linear-gradient(90deg, @mauve, @blue);
+    border-radius: 99px;
+    min-height: 6px;
+}
+
+/* ---------- control center ---------- */
+.control-center {
+    background: alpha(@base, 0.9);
+    border: 1px solid alpha(@surface1, 0.9);
+    border-radius: 18px;
+    padding: 10px;
+}
+.control-center-list { background: transparent; }
+.control-center-list-placeholder { color: @overlay0; opacity: 1; }
+
+.widget-title { margin: 6px 8px; }
+.widget-title > label { color: @text; font-size: 17px; font-weight: 800; }
+.widget-title > button {
+    background: @surface0;
+    color: @text;
+    border: none;
+    border-radius: 10px;
+    padding: 4px 12px;
+}
+.widget-title > button:hover { background: @red; color: @crust; }
+
+.widget-buttons-grid {
+    background: alpha(@mantle, 0.8);
+    border-radius: 14px;
+    padding: 8px;
+    margin: 6px 4px;
+}
+.widget-buttons-grid > flowbox > flowboxchild > button {
+    background: @surface0;
+    color: @text;
+    border: none;
+    border-radius: 12px;
+    min-width: 72px;
+    min-height: 44px;
+    font-size: 17px;
+}
+.widget-buttons-grid > flowbox > flowboxchild > button:hover { background: @surface1; }
+.widget-buttons-grid > flowbox > flowboxchild > button.toggle:checked {
+    background: linear-gradient(135deg, @mauve, @blue);
+    color: @crust;
+}
+
+.widget-volume, .widget-backlight {
+    background: alpha(@mantle, 0.8);
+    border-radius: 14px;
+    padding: 6px 12px;
+    margin: 4px;
+}
+.widget-volume > box > label, .widget-backlight > label { color: @pink; font-size: 16px; margin-right: 6px; }
+.widget-backlight > label { color: @yellow; }
+.widget-volume trough, .widget-backlight trough {
+    background: @surface0;
+    border-radius: 99px;
+    min-height: 8px;
+}
+.widget-volume highlight, .widget-backlight highlight {
+    background: linear-gradient(90deg, @mauve, @blue);
+    border-radius: 99px;
+}
+.widget-volume slider, .widget-backlight slider {
+    background: @text;
+    border-radius: 99px;
+    min-width: 14px;
+    min-height: 14px;
+}
+
+.widget-mpris { margin: 4px; }
+.widget-mpris-player {
+    background: alpha(@mantle, 0.8);
+    border-radius: 14px;
+    padding: 10px;
+}
+.widget-mpris-title    { color: @text; font-weight: 700; }
+.widget-mpris-subtitle { color: @subtext0; }
+.widget-mpris button { color: @text; background: transparent; border-radius: 99px; }
+.widget-mpris button:hover { background: @surface0; }
+
+.widget-dnd {
+    background: alpha(@mantle, 0.8);
+    border-radius: 14px;
+    padding: 8px 12px;
+    margin: 4px;
+}
+.widget-dnd > label { color: @text; }
+.widget-dnd > switch {
+    background: @surface0;
+    border-radius: 99px;
+}
+.widget-dnd > switch:checked { background: @mauve; }
+.widget-dnd > switch slider { background: @text; border-radius: 99px; }

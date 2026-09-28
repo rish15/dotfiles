@@ -1,6 +1,6 @@
 # dotfiles
 
-Hyprland (0.55+, Lua config) setup for CachyOS, ported from my Sway config.
+Hyprland (0.55+, Lua config) rice for CachyOS · Catppuccin Mocha everywhere: Hyprland, waybar, swaync, rofi, alacritty, hyprlock, GTK.
 
 ## Install
 
@@ -23,8 +23,13 @@ The installer symlinks every folder in `config/` into `~/.config/`. Existing con
 ## Layout
 
 ```
-config/hypr/      hyprland.lua, hypridle.conf, hyprlock.conf, scripts/display-watch.sh
-config/waybar/    config.jsonc, style.css
+config/hypr/        hyprland.lua, hypridle.conf, hyprlock.conf, wallpaper.jpg
+config/hypr/scripts display-watch, nightlight, osd, powermenu, wallpaper
+config/waybar/      config.jsonc, style.css, mocha.css, scripts/updates.sh
+config/swaync/      notification + control center
+config/rofi/        launcher theme
+config/alacritty/   terminal theme
+config/gtk-3.0, gtk-4.0  Catppuccin colors over adw-gtk3-dark
 install.sh
 ```
 
@@ -38,12 +43,25 @@ Because the configs are symlinked, edits in `~/.config` land in the repo. Commit
 | `Super+Return` | Terminal |
 | `Super+D` | Launcher |
 | `Super+V` | Clipboard history |
+| `Super+Shift+N` | Control center (notifications, toggles, media, sliders) |
+| `Super+N` | Toggle night light |
+| `Super+Escape` / `Super+Shift+E` | Power menu |
 | `Super+Shift+X` | Lock |
 | `Super+Shift+Q` | Close window |
 | `Super+F` / `Super+Shift+Space` | Fullscreen / float |
 | `Super+R` | Resize mode (arrows, Esc to exit) |
 | `Super+1..5` / `Super+Shift+1..5` | Go to / move to workspace |
+| `Super+scroll` | Cycle workspaces |
+| ``Super+` `` / ``Super+Shift+` `` | Scratchpad show / send |
 | `Print` / `Super+Print` / `Super+Shift+S` | Full / region / flameshot screenshot |
 | `Super+[ ]` / `Super+Shift+[ ]` | Inner / outer gaps |
-| `Super+N` | Toggle night light |
+| `Super+Shift+W` | Toggle waybar |
 | `Super+Shift+C` | Reload |
+
+## Bar
+
+Left: launcher (right-click = clipboard) · workspaces · media (scroll = next/prev)
+Center: clock (hover = calendar, click = date)
+Right: CPU (hover to reveal RAM / temp / disk) · volume + mic · brightness · network · bluetooth · battery · updates · caffeine · night light · tray · notifications · power
+
+Wallpaper: drop `~/Pictures/wallpaper.jpg` to override the bundled one.

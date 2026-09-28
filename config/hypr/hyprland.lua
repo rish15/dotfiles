@@ -1,11 +1,23 @@
--- ~/.config/hypr/hyprland.lua — port of Rishu's Sway config (Hyprland 0.55+ Lua config)
+-- ~/.config/hypr/hyprland.lua — Rishu's rice · Catppuccin Mocha (Hyprland 0.55+ Lua config)
+
+----------------------
+---- PALETTE ---------
+----------------------
+local c = {
+    base = "1e1e2e", mantle = "181825", crust = "11111b",
+    surface0 = "313244", surface1 = "45475a", overlay0 = "6c7086",
+    text = "cdd6f4", mauve = "cba6f7", blue = "89b4fa", lavender = "b4befe",
+    teal = "94e2d5", red = "f38ba8",
+}
+local function rgba(hex, a) return "rgba(" .. hex .. (a or "ff") .. ")" end
 
 ----------------------
 ---- VARIABLES -------
 ----------------------
-local mod  = "SUPER"
-local term = "alacritty"
-local menu = "rofi -show drun"
+local mod     = "SUPER"
+local term    = "alacritty"
+local menu    = "rofi -show drun"
+local scripts = "~/.config/hypr/scripts/"
 
 local function k(keys) return mod .. " + " .. keys end
 local exec = hl.dsp.exec_cmd
@@ -14,38 +26,38 @@ local exec = hl.dsp.exec_cmd
 ---- MONITORS --------
 ----------------------
 -- eDP-1 gets disabled automatically by scripts/display-watch.sh when an external screen is plugged in
-hl.monitor({ output = "HDMI-A-1", mode = "preferred", position = "auto", scale = "1" })
-hl.monitor({ output = "eDP-1",    mode = "preferred", position = "auto", scale = "1" })
-hl.monitor({ output = "",         mode = "preferred", position = "auto", scale = "1" })
+hl.monitor({ output = "eDP-1", mode = "preferred", position = "auto", scale = "1" })
+hl.monitor({ output = "",      mode = "preferred", position = "auto", scale = "1" })
 
 ----------------------
 ---- AUTOSTART -------
 ----------------------
 hl.on("hyprland.start", function()
-    hl.exec_cmd("dex --autostart --environment Hyprland")
-    hl.exec_cmd("nm-applet --indicator")
-    hl.exec_cmd("pasystray")
+    hl.exec_cmd(scripts .. "wallpaper.sh")
     hl.exec_cmd("waybar")
-    hl.exec_cmd("swaybg -i ~/Pictures/wallpaper.jpg -m fill")
+    hl.exec_cmd("swaync")
+    hl.exec_cmd("nm-applet --indicator")
     hl.exec_cmd("wl-paste --watch cliphist store")
     hl.exec_cmd("gammastep -l geoclue2")
     hl.exec_cmd("hypridle")
-    hl.exec_cmd("~/.config/hypr/scripts/display-watch.sh")
+    hl.exec_cmd("/usr/lib/polkit-kde-authentication-agent-1")
+    hl.exec_cmd(scripts .. "display-watch.sh")
 end)
 
 ----------------------
 ---- ENV -------------
 ----------------------
+hl.env("XCURSOR_THEME", "Adwaita")
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
 hl.env("QT_QPA_PLATFORM", "wayland")
+hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
 hl.env("MOZ_ENABLE_WAYLAND", "1")
-hl.env("GTK_THEME", "Materia-dark")
 
 ----------------------
 ---- LOOK & INPUT ----
 ----------------------
-local gaps_in, gaps_out = 5, 10
+local gaps_in, gaps_out = 6, 12
 
 hl.config({
     general = {
@@ -53,20 +65,37 @@ hl.config({
         gaps_out    = gaps_out,
         border_size = 2,
         col = {
-            active_border   = "rgba(89b4faee)",
-            inactive_border = "rgba(45475aaa)",
+            active_border   = { colors = { rgba(c.mauve), rgba(c.blue) }, angle = 45 },
+            inactive_border = rgba(c.surface0, "aa"),
         },
+        resize_on_border = true,
         layout = "dwindle",
     },
     decoration = {
-        rounding = 8,
-        blur = { enabled = true, size = 6, passes = 2 },
+        rounding       = 12,
+        rounding_power = 2,
+        active_opacity   = 1.0,
+        inactive_opacity = 0.95,
+        shadow = {
+            enabled      = true,
+            range        = 18,
+            render_power = 3,
+            color        = 0xcc11111b,
+        },
+        blur = {
+            enabled  = true,
+            size     = 6,
+            passes   = 3,
+            vibrancy = 0.17,
+            popups   = true,
+        },
     },
     animations = { enabled = true },
     dwindle    = { preserve_split = true },
     misc = {
         force_default_wallpaper = 0,
         disable_hyprland_logo   = true,
+        background_color        = tonumber("0x" .. c.base),
     },
     input = {
         kb_layout    = "us",
@@ -78,15 +107,28 @@ hl.config({
     },
 })
 
+-- Animations: snappy, slightly springy
+hl.curve("smooth", { type = "bezier", points = { {0.25, 1}, {0.5, 1} } })
+hl.curve("snap",   { type = "bezier", points = { {0.05, 0.9}, {0.1, 1.05} } })
+hl.animation({ leaf = "windows",    enabled = true, speed = 5, bezier = "snap",   style = "popin 85%" })
+hl.animation({ leaf = "windowsOut", enabled = true, speed = 4, bezier = "smooth", style = "popin 85%" })
+hl.animation({ leaf = "border",     enabled = true, speed = 8, bezier = "smooth" })
+hl.animation({ leaf = "fade",       enabled = true, speed = 5, bezier = "smooth" })
+hl.animation({ leaf = "layers",     enabled = true, speed = 4, bezier = "smooth", style = "fade" })
+hl.animation({ leaf = "workspaces", enabled = true, speed = 5, bezier = "smooth", style = "slide" })
+
 ----------------------
----- WINDOW RULES ----
+---- RULES -----------
 ----------------------
--- was: for_window [app_id="Alacritty"] opacity 0.92
-hl.window_rule({
-    name    = "alacritty-opacity",
-    match   = { class = "^(Alacritty)$" },
-    opacity = "0.92 0.92",
-})
+hl.window_rule({ name = "alacritty-opacity", match = { class = "^(Alacritty)$" }, opacity = "0.92 0.88" })
+hl.window_rule({ name = "float-pavucontrol", match = { class = "^(org.pulseaudio.pavucontrol)$" }, float = true, size = "900 600", center = true })
+hl.window_rule({ name = "float-nm-editor",   match = { class = "^(nm-connection-editor)$" },       float = true, center = true })
+hl.window_rule({ name = "float-blueman",     match = { class = "^(blueman-manager)$" },            float = true, center = true })
+
+-- Frosted glass behind the bar, launcher and notification center
+for _, ns in ipairs({ "waybar", "rofi", "swaync-control-center", "swaync-notification-window" }) do
+    hl.layer_rule({ name = "blur-" .. ns, match = { namespace = ns }, blur = true, ignore_alpha = 0.3 })
+end
 
 ----------------------
 ---- KEYBINDS --------
@@ -94,17 +136,20 @@ hl.window_rule({
 hl.bind(k("Return"),        exec(term))
 hl.bind(k("SHIFT + Q"),     hl.dsp.window.close())
 hl.bind(k("D"),             exec(menu))
-hl.bind(k("V"),             exec("cliphist list | rofi -dmenu | cliphist decode | wl-copy"))
+hl.bind(k("V"),             exec("cliphist list | rofi -dmenu -p ' Clipboard' | cliphist decode | wl-copy"))
 hl.bind(k("SHIFT + C"),     exec("hyprctl reload"))
-hl.bind(k("SHIFT + E"),     hl.dsp.exit())
+hl.bind(k("SHIFT + E"),     exec(scripts .. "powermenu.sh"))
+hl.bind(k("Escape"),        exec(scripts .. "powermenu.sh"))
 hl.bind(k("SHIFT + X"),     exec("hyprlock"))
 hl.bind(k("F"),             hl.dsp.window.fullscreen())
 hl.bind(k("SHIFT + space"), hl.dsp.window.float({ action = "toggle" }))
-hl.bind(k("N"),             exec("pkill gammastep || gammastep -l geoclue2"))
+hl.bind(k("N"),             exec(scripts .. "nightlight.sh toggle"))
+hl.bind(k("SHIFT + N"),     exec("swaync-client -t -sw"))
+hl.bind(k("SHIFT + W"),     exec("pkill waybar || waybar"))
 
 -- Screenshots
-hl.bind("Print",    exec([[grim ~/Pictures/screenshot-$(date +%F-%H%M%S).png]]))
-hl.bind(k("Print"), exec([[sh -c 'f=~/Pictures/screenshot-$(date +%F-%H%M%S).png; grim -g "$(slurp)" "$f" && wl-copy < "$f"']]))
+hl.bind("Print",    exec([[sh -c 'f=~/Pictures/screenshot-$(date +%F-%H%M%S).png; grim "$f" && notify-send -i "$f" "Screenshot saved" "$f"']]))
+hl.bind(k("Print"), exec([[sh -c 'f=~/Pictures/screenshot-$(date +%F-%H%M%S).png; grim -g "$(slurp)" "$f" && wl-copy < "$f" && notify-send -i "$f" "Region copied" "$f"']]))
 hl.bind(k("SHIFT + S"), exec("flameshot gui"))
 
 -- Gaps (was $mod+[ / ] and Shift variants)
@@ -118,15 +163,21 @@ hl.bind(k("SHIFT + bracketright"), function() gaps_out = gaps_out + 2;          
 
 -- Focus / move
 for _, dir in ipairs({ "left", "right", "up", "down" }) do
-    hl.bind(k(dir),             hl.dsp.focus({ direction = dir }))
+    hl.bind(k(dir),               hl.dsp.focus({ direction = dir }))
     hl.bind(k("SHIFT + " .. dir), hl.dsp.window.move({ direction = dir }))
 end
 
--- Workspaces 1-5
+-- Workspaces 1-5 (+ scroll through them)
 for i = 1, 5 do
-    hl.bind(k(tostring(i)),           hl.dsp.focus({ workspace = i }))
-    hl.bind(k("SHIFT + " .. i),       hl.dsp.window.move({ workspace = i }))
+    hl.bind(k(tostring(i)),     hl.dsp.focus({ workspace = i }))
+    hl.bind(k("SHIFT + " .. i), hl.dsp.window.move({ workspace = i }))
 end
+hl.bind(k("mouse_down"), hl.dsp.focus({ workspace = "e+1" }))
+hl.bind(k("mouse_up"),   hl.dsp.focus({ workspace = "e-1" }))
+
+-- Scratchpad
+hl.bind(k("grave"),         hl.dsp.workspace.toggle_special("magic"))
+hl.bind(k("SHIFT + grave"), hl.dsp.window.move({ workspace = "special:magic" }))
 
 -- Mouse move/resize
 hl.bind(k("mouse:272"), hl.dsp.window.drag(),   { mouse = true })
@@ -143,10 +194,15 @@ hl.define_submap("resize", function()
     hl.bind("Return", hl.dsp.submap("reset"))
 end)
 
--- Media keys
+-- Media keys (volume/brightness go through an OSD script so you get a popup)
 local media = { locked = true, repeating = true }
-hl.bind("XF86MonBrightnessUp",   exec("brightnessctl set 5%+"), media)
-hl.bind("XF86MonBrightnessDown", exec("brightnessctl set 5%-"), media)
-hl.bind("XF86AudioRaiseVolume",  exec("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"), media)
-hl.bind("XF86AudioLowerVolume",  exec("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), media)
-hl.bind("XF86AudioMute",         exec("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), { locked = true })
+hl.bind("XF86MonBrightnessUp",   exec(scripts .. "osd.sh bright-up"),   media)
+hl.bind("XF86MonBrightnessDown", exec(scripts .. "osd.sh bright-down"), media)
+hl.bind("XF86AudioRaiseVolume",  exec(scripts .. "osd.sh vol-up"),      media)
+hl.bind("XF86AudioLowerVolume",  exec(scripts .. "osd.sh vol-down"),    media)
+hl.bind("XF86AudioMute",         exec(scripts .. "osd.sh mute"),        { locked = true })
+hl.bind("XF86AudioMicMute",      exec("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"), { locked = true })
+hl.bind("XF86AudioPlay",  exec("playerctl play-pause"), { locked = true })
+hl.bind("XF86AudioPause", exec("playerctl play-pause"), { locked = true })
+hl.bind("XF86AudioNext",  exec("playerctl next"),       { locked = true })
+hl.bind("XF86AudioPrev",  exec("playerctl previous"),   { locked = true })
