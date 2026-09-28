@@ -90,8 +90,9 @@ hl.config({
     decoration = {
         rounding       = 12,
         rounding_power = 2,
-        active_opacity   = 1.0,
-        inactive_opacity = 0.95,
+        -- every window is slightly see-through so the blur shows behind it
+        active_opacity   = 0.92,
+        inactive_opacity = 0.85,
         shadow = {
             enabled      = true,
             range        = 18,
@@ -99,11 +100,15 @@ hl.config({
             color        = 0xcc11111b,
         },
         blur = {
-            enabled  = true,
-            size     = 6,
-            passes   = 3,
-            vibrancy = 0.17,
-            popups   = true,
+            enabled           = true,
+            size              = 8,
+            passes            = 3,
+            new_optimizations = true,
+            noise             = 0.02,
+            contrast          = 1.0,
+            brightness        = 0.9,
+            vibrancy          = 0.2,
+            popups            = true,
         },
     },
     animations = { enabled = true },
@@ -134,7 +139,14 @@ hl.animation({ leaf = "workspaces", enabled = true, speed = 5, bezier = "smooth"
 ----------------------
 ---- RULES -----------
 ----------------------
-hl.window_rule({ name = "alacritty-opacity", match = { class = "^(Alacritty)$" }, opacity = "0.92 0.88" })
+-- Keep these fully opaque: video/images/games look wrong see-through, and
+-- Alacritty already has its own transparent background (text stays crisp)
+hl.window_rule({
+    name   = "opaque-media",
+    match  = { class = "^(mpv|vlc|imv|org.gnome.Loupe|steam_app_.*|gamescope|Alacritty)$" },
+    opaque = true,
+})
+hl.window_rule({ name = "opaque-fullscreen", match = { fullscreen = true }, opaque = true })
 hl.window_rule({ name = "float-pavucontrol", match = { class = "^(org.pulseaudio.pavucontrol)$" }, float = true, size = "900 600", center = true })
 hl.window_rule({ name = "float-nm-editor",   match = { class = "^(nm-connection-editor)$" },       float = true, center = true })
 hl.window_rule({ name = "float-blueman",     match = { class = "^(blueman-manager)$" },            float = true, center = true })
