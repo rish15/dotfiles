@@ -25,9 +25,26 @@ local exec = hl.dsp.exec_cmd
 ----------------------
 ---- MONITORS --------
 ----------------------
--- eDP-1 gets disabled automatically by scripts/display-watch.sh when an external screen is plugged in
-hl.monitor({ output = "eDP-1", mode = "preferred", position = "auto", scale = "1" })
-hl.monitor({ output = "",      mode = "preferred", position = "auto", scale = "1" })
+-- External screen connected -> laptop panel off; unplugged -> back on.
+-- Runs inside Hyprland (no background script), re-checked on every reload.
+local LAPTOP = "eDP-1"
+hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "1" })
+
+local function sync_displays(ignore)
+    local externals = 0
+    for _, m in ipairs(hl.get_monitors()) do
+        if m.name ~= LAPTOP and m.name ~= ignore then externals = externals + 1 end
+    end
+    if externals > 0 then
+        hl.monitor({ output = LAPTOP, disabled = true })
+    else
+        hl.monitor({ output = LAPTOP, mode = "preferred", position = "auto", scale = "1" })
+    end
+end
+
+sync_displays()
+hl.on("monitor.added",   function(m) if m.name ~= LAPTOP then sync_displays() end end)
+hl.on("monitor.removed", function(m) if m.name ~= LAPTOP then sync_displays(m.name) end end)
 
 ----------------------
 ---- AUTOSTART -------
@@ -41,7 +58,6 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("gammastep -l geoclue2")
     hl.exec_cmd("hypridle")
     hl.exec_cmd("/usr/lib/polkit-kde-authentication-agent-1")
-    hl.exec_cmd(scripts .. "display-watch.sh")
 end)
 
 ----------------------
