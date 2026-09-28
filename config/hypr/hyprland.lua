@@ -107,11 +107,9 @@ hl.config({
     },
 })
 
--- Animations: snappy, slightly springy
+-- Animations: windows appear instantly; subtle fades elsewhere
 hl.curve("smooth", { type = "bezier", points = { {0.25, 1}, {0.5, 1} } })
-hl.curve("snap",   { type = "bezier", points = { {0.05, 0.9}, {0.1, 1.05} } })
-hl.animation({ leaf = "windows",    enabled = true, speed = 5, bezier = "snap",   style = "popin 85%" })
-hl.animation({ leaf = "windowsOut", enabled = true, speed = 4, bezier = "smooth", style = "popin 85%" })
+hl.animation({ leaf = "windows",    enabled = false })   -- no open/close/move animation
 hl.animation({ leaf = "border",     enabled = true, speed = 8, bezier = "smooth" })
 hl.animation({ leaf = "fade",       enabled = true, speed = 5, bezier = "smooth" })
 hl.animation({ leaf = "layers",     enabled = true, speed = 4, bezier = "smooth", style = "fade" })
