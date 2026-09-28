@@ -1,6 +1,6 @@
 # dotfiles
 
-Hyprland setup for CachyOS, ported from my Sway config.
+Hyprland (0.55+, Lua config) setup for CachyOS, ported from my Sway config.
 
 ## Install
 
@@ -23,7 +23,7 @@ The installer symlinks every folder in `config/` into `~/.config/`. Existing con
 ## Layout
 
 ```
-config/hypr/      hyprland.conf, hypridle.conf, hyprlock.conf, scripts/display-watch.sh
+config/hypr/      hyprland.lua, hypridle.conf, hyprlock.conf, scripts/display-watch.sh
 config/waybar/    config.jsonc, style.css
 install.sh
 ```

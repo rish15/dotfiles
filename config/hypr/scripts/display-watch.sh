@@ -7,9 +7,9 @@ LAPTOP=eDP-1
 
 switch() {
     if hyprctl monitors all -j | jq -e '.[] | select(.name != "'"$LAPTOP"'")' >/dev/null; then
-        hyprctl keyword monitor "$LAPTOP,disable" >/dev/null
+        hyprctl eval "hl.monitor({ output = \"$LAPTOP\", disabled = true })" >/dev/null
     else
-        hyprctl keyword monitor "$LAPTOP,preferred,auto,1" >/dev/null
+        hyprctl eval "hl.monitor({ output = \"$LAPTOP\", mode = \"preferred\", position = \"auto\", scale = \"1\" })" >/dev/null
     fi
 }
 
