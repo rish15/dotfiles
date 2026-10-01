@@ -43,6 +43,10 @@ map('n', '<leader>u', ':UndotreeShow<CR>', s)
 map('n', '<leader>c', ':Goyo<CR>', s)
 map('n', '<leader>ac', ':FloatermNew<CR>', s)
 
+-- markdown / README
+map('n', '<leader>mr', ':RenderMarkdown toggle<CR>', s)  -- rendered <-> raw in nvim
+map('n', '<leader>mp', ':MarkdownPreviewToggle<CR>', s)  -- live preview in the browser
+
 -- claude code
 map('n', '<leader>ai', ':ClaudeCode<CR>', s)
 map('n', '<leader>as', ':ClaudeCodeSend<CR>', s)

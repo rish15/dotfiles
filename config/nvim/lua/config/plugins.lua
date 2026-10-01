@@ -33,10 +33,12 @@ Plug('fatih/vim-go', { ['do'] = ':GoUpdateBinaries' })
 Plug('leafgarland/typescript-vim')
 Plug('pangloss/vim-javascript')
 Plug('ekalinin/Dockerfile.vim')
-Plug('iamcco/markdown-preview.nvim', {
+Plug('iamcco/markdown-preview.nvim', {   -- README in the browser
     ['do'] = function() vim.fn['mkdp#util#install']() end,
     ['for'] = { 'markdown', 'vim-plug' },
 })
+Plug('MeanderingProgrammer/render-markdown.nvim') -- README rendered in the buffer
+Plug('nvim-tree/nvim-web-devicons')               -- icons for its code blocks
 
 -- AI
 Plug('coder/claudecode.nvim')
@@ -102,6 +104,13 @@ vim.g.go_metalinter_enabled = {}
 vim.g.go_jump_to_error = 0
 vim.g.go_fmt_command = 'goimports'
 vim.g.go_auto_sameids = 0
+
+---------------------------------------------------------------- markdown
+-- Renders in normal mode, shows raw markdown on the line you're editing
+local ok_md, render_md = pcall(require, 'render-markdown')
+if ok_md then
+    render_md.setup({ file_types = { 'markdown' } })
+end
 
 ---------------------------------------------------------------- claude code
 local ok, claudecode = pcall(require, 'claudecode')
