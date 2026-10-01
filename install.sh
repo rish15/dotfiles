@@ -103,6 +103,12 @@ if command -v nvim >/dev/null; then
     run nvim --headless +PlugInstall +qall || warn "PlugInstall failed, run :PlugInstall inside nvim"
 fi
 
+# 4c. Claude Code CLI (used by claudecode.nvim: <leader>ai in nvim)
+if ! command -v claude >/dev/null; then
+    log "Installing Claude Code CLI"
+    run bash -c 'curl -fsSL https://claude.ai/install.sh | bash' || warn "Claude Code install failed, see https://docs.claude.com/en/docs/claude-code"
+fi
+
 # 5. Theme: GTK apps + icons (Catppuccin colors come from gtk-3.0/gtk-4.0 gtk.css)
 if command -v gsettings >/dev/null; then
     log "Applying GTK theme"

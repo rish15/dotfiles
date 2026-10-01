@@ -105,7 +105,14 @@ map('n', '<leader>hr', ':Gitsigns reset_hunk<CR>', s)
 map('n', '<leader>mr', ':RenderMarkdown toggle<CR>', s)  -- rendered <-> raw in nvim
 map('n', '<leader>mp', ':MarkdownPreviewToggle<CR>', s)  -- live preview in the browser
 
--- claude code
-map('n', '<leader>ai', ':ClaudeCode<CR>', s)
-map('n', '<leader>as', ':ClaudeCodeSend<CR>', s)
-map('v', '<leader>as', ':ClaudeCodeSend<CR>', s)
+-- claude code (<leader>ac stays on floaterm)
+map('n', '<leader>ai', ':ClaudeCode<CR>', s)                -- toggle Claude panel
+map('n', '<leader>af', ':ClaudeCodeFocus<CR>', s)           -- jump to / from Claude
+map('n', '<leader>ar', ':ClaudeCode --resume<CR>', s)       -- pick a past session
+map('n', '<leader>aC', ':ClaudeCode --continue<CR>', s)     -- continue last session
+map('n', '<leader>am', ':ClaudeCodeSelectModel<CR>', s)     -- choose model
+map('n', '<leader>ab', ':ClaudeCodeAdd %<CR>', s)           -- add this file to context
+map('n', '<leader>as', ':ClaudeCodeSend<CR>', s)            -- send current line
+map('v', '<leader>as', ':ClaudeCodeSend<CR>', s)            -- send selection
+map('n', '<leader>aa', ':ClaudeCodeDiffAccept<CR>', s)      -- accept Claude's proposed edit
+map('n', '<leader>ad', ':ClaudeCodeDiffDeny<CR>', s)        -- reject it

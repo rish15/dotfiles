@@ -128,13 +128,29 @@ This works for YAML, JSON, `.env` and TOML. It uses `sops` and whatever key you 
 
 Undo history isn't saved for SOPS files, or for anything under `/tmp`, so decrypted secrets never get written to `~/.local/state/nvim/undo`.
 
+### Claude Code
+
+Claude runs in a panel on the right and can see your editor. It knows your open file and selection, and its proposed edits show up as nvim diffs.
+This needs the `claude` CLI, which the installer sets up.
+
+| Key | Action |
+|---|---|
+| `<leader>ai` | Toggle the Claude panel |
+| `<leader>af` | Jump between Claude and your code |
+| `<leader>as` (n, v) | Send line / selection to Claude |
+| `<leader>ab` | Add the current file to Claude's context |
+| `<leader>ar` | Resume a past session |
+| `<leader>aC` | Continue the last session |
+| `<leader>am` | Pick the model |
+| `<leader>aa` / `<leader>ad` | Accept / reject Claude's proposed edit (or `:w` / `:q` in the diff) |
+
+To check the connection, run `:ClaudeCodeStatus`.
+
 ### Tools
 
 | Key | Action |
 |---|---|
 | `<leader>?` | This cheatsheet in a float (`q` / `Esc` to close, `/` to search) |
-| `<leader>ai` | Open Claude Code |
-| `<leader>as` (n, v) | Send line / selection to Claude |
 | `<leader>ac` | Floating terminal (`exit` closes it) |
 | `<leader>c` | Zen mode (Goyo) |
 | `<leader>ev` | Edit `init.lua` in a new tab |
