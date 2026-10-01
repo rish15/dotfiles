@@ -3,11 +3,18 @@ local Plug = vim.fn['plug#']
 
 vim.call('plug#begin')
 
--- look
-Plug('cocopon/iceberg.vim')
-Plug('dracula/vim', { as = 'dracula' })
-Plug('itchyny/lightline.vim')
-Plug('ryanoasis/vim-devicons')
+-- look (configured in ui.lua)
+Plug('catppuccin/nvim', { as = 'catppuccin' })
+Plug('nvim-lualine/lualine.nvim')
+Plug('akinsho/bufferline.nvim')
+Plug('lukas-reineke/indent-blankline.nvim')
+Plug('nvim-tree/nvim-web-devicons')
+Plug('ryanoasis/vim-devicons')  -- NERDTree icons
+-- treesitter rewrote itself for nvim 0.12 ('main'); 'master' is the 0.11 version
+Plug('nvim-treesitter/nvim-treesitter', {
+    branch = vim.fn.has('nvim-0.12') == 1 and 'main' or 'master',
+    ['do'] = ':TSUpdate',
+})
 
 -- navigation / search
 Plug('preservim/nerdtree')
@@ -39,46 +46,15 @@ Plug('iamcco/markdown-preview.nvim', {   -- README in the browser
     ['for'] = { 'markdown', 'vim-plug' },
 })
 Plug('MeanderingProgrammer/render-markdown.nvim') -- README rendered in the buffer
-Plug('nvim-tree/nvim-web-devicons')               -- icons for its code blocks
 
 -- AI
 Plug('coder/claudecode.nvim')
 
 vim.call('plug#end')
 
----------------------------------------------------------------- theme
--- pcall: first launch on a new machine runs before :PlugInstall
-if pcall(vim.cmd.colorscheme, 'iceberg') then
-    for _, group in ipairs({ 'Normal', 'NonText', 'StatusLine', 'StatusLineNC', 'TabLine', 'TabLineFill' }) do
-        vim.api.nvim_set_hl(0, group, { bg = 'NONE', ctermbg = 'NONE' })
-    end
-end
-
----------------------------------------------------------------- lightline
-vim.g.lightline = {
-    colorscheme = 'iceberg',
-    active = {
-        left = { { 'mode', 'paste' }, { 'gitbranch', 'readonly', 'filename', 'modified' } },
-        right = { { 'lineinfo' }, { 'percent' }, { 'cocstatus', 'filetype' } },
-    },
-    component_function = {
-        gitbranch = 'FugitiveHead',
-        cocstatus = 'coc#status',
-    },
-    tabline = { left = { { 'tabs' } }, right = { { 'close' } } },
-    tab = {
-        active = { 'filetype', 'filename', 'modified' },
-        inactive = { 'filetype', 'filename', 'modified' },
-    },
-}
-vim.api.nvim_create_autocmd('User', {
-    pattern = 'CocStatusChange',
-    callback = function() pcall(vim.fn['lightline#update']) end,
-})
-
 ---------------------------------------------------------------- nerdtree
-vim.g.NERDTreeDirArrowExpandable = '|'
-vim.g.NERDTreeDirArrowCollapsible = '|'
+vim.g.NERDTreeDirArrowExpandable = ''
+vim.g.NERDTreeDirArrowCollapsible = ''
 vim.g.NERDTreeMinimalUI = 1
 vim.g.NERDTreeShowHidden = 1
 vim.g.NERDTreeWinSize = 30

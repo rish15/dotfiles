@@ -31,6 +31,9 @@ map('n', '<C-Down>', ':resize +1<CR>', s)
 map('n', '<C-Left>', ':vertical resize -1<CR>', s)
 map('n', '<C-Right>', ':vertical resize +1<CR>', s)
 map('n', '<C-t>', ':tabedit<CR>', s)
+map('n', ']b', ':BufferLineCycleNext<CR>', s)   -- next / prev buffer tab
+map('n', '[b', ':BufferLineCyclePrev<CR>', s)
+map('n', '<leader>x', ':bp | bd #<CR>', s)      -- close buffer, keep the window
 
 -- plugins
 map('n', '<C-n>', ':NERDTreeToggle<CR>', s)

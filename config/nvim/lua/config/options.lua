@@ -18,10 +18,13 @@ o.relativenumber = true
 o.cursorline = true
 o.wrap = true
 o.linebreak = true
-o.showmode = false        -- lightline shows the mode
+o.showmode = false        -- lualine shows the mode
 o.showtabline = 2
-o.cmdheight = 2
-o.signcolumn = 'number'
+o.cmdheight = 1
+o.signcolumn = 'yes'       -- own column for git/diagnostic signs
+o.scrolloff = 8           -- keep 8 lines of context above/below the cursor
+o.sidescrolloff = 8
+o.pumblend = 10           -- slightly see-through completion menu
 o.shortmess:append('atcI') -- shorter messages, no intro screen
 
 -- search

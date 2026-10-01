@@ -10,5 +10,6 @@ vim.g.mapleader = ' '
 
 require('config.options')
 require('config.plugins')
+require('config.ui')
 require('config.keymaps')
 require('config.coc')
