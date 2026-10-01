@@ -10,6 +10,16 @@ if ok_cat then
         float = { transparent = false, solid = false },
         term_colors = true,
         styles = { comments = { 'italic' }, keywords = { 'italic' } },
+        -- Default CursorLine is a faint blend that vanishes on a transparent bg;
+        -- use a lavender-tinted bar + bright line number. Bump 0.22 to taste.
+        custom_highlights = function(c)
+            local blend = require('catppuccin.utils.colors').blend
+            return {
+                CursorLine = { bg = blend(c.lavender, c.base, 0.22) },
+                CursorLineNr = { fg = c.lavender, style = { 'bold' } },
+                GitSignsCurrentLineBlame = { fg = c.overlay1, style = { 'italic' } }, -- readable on the bar
+            }
+        end,
         -- vim-plug isn't auto-detected, so list what we use
         auto_integrations = false,
         integrations = {
