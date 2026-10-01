@@ -46,6 +46,7 @@ Plug('iamcco/markdown-preview.nvim', {   -- README in the browser
     ['for'] = { 'markdown', 'vim-plug' },
 })
 Plug('MeanderingProgrammer/render-markdown.nvim') -- README rendered in the buffer
+Plug('trixnz/sops.nvim')  -- SOPS files decrypt on open, re-encrypt on save (:SopsToggle)
 
 -- AI
 Plug('coder/claudecode.nvim')
@@ -103,6 +104,22 @@ local ok_md, render_md = pcall(require, 'render-markdown')
 if ok_md then
     render_md.setup({ file_types = { 'markdown' } })
 end
+
+---------------------------------------------------------------- sops
+-- undofile is on globally, which would write decrypted secrets to
+-- ~/.local/state/nvim/undo. Turn it off for SOPS buffers while they're still
+-- encrypted (sops.nvim decrypts right after BufReadPost), and for /tmp files
+-- so `sops edit` (which opens a decrypted temp file) doesn't leak either.
+vim.api.nvim_create_autocmd('BufReadPost', {
+    group = vim.api.nvim_create_augroup('sops_no_undo', { clear = true }),
+    callback = function(args)
+        local name = vim.api.nvim_buf_get_name(args.buf)
+        local lines = vim.api.nvim_buf_get_lines(args.buf, 0, -1, false)
+        if name:match('^/tmp/') or table.concat(lines, '\n'):find('ENC[AES256_GCM,', 1, true) then
+            vim.bo[args.buf].undofile = false
+        end
+    end,
+})
 
 ---------------------------------------------------------------- claude code
 local ok, claudecode = pcall(require, 'claudecode')

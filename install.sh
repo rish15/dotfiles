@@ -45,6 +45,8 @@ PKGS=(
     zsh starship
     # editor (node: coc/prettier, rg: :Rg, go: vim-go, tree-sitter-cli+gcc: parsers)
     neovim curl ripgrep nodejs npm go tree-sitter-cli gcc
+    # secrets (sops.nvim)
+    sops age
     # theme: GTK, icons, Qt, fonts
     adw-gtk-theme papirus-icon-theme qt6ct ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji
 )

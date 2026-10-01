@@ -117,6 +117,17 @@ Abbreviations in insert mode: `teh` becomes `the`, `ed` becomes `export default`
 | `<leader>mr` | Toggle rendered / raw markdown |
 | `<leader>mp` | Live preview in browser |
 
+### SOPS secrets
+
+To edit a secret, open the encrypted file with `nvim secrets.yaml`. You'll see it decrypted, and `:w` encrypts it again.
+This works for YAML, JSON, `.env` and TOML. It uses `sops` and whatever key you normally use (age, AWS KMS and so on).
+
+| Command | Action |
+|---|---|
+| `:SopsToggle` | Turn automatic decrypt/encrypt off or on |
+
+Undo history isn't saved for SOPS files, or for anything under `/tmp`, so decrypted secrets never get written to `~/.local/state/nvim/undo`.
+
 ### Tools
 
 | Key | Action |
