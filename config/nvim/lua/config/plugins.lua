@@ -19,8 +19,9 @@ Plug('voldikss/vim-floaterm')
 Plug('junegunn/goyo.vim')
 
 -- git
-Plug('tpope/vim-fugitive')
-Plug('airblade/vim-gitgutter')
+Plug('tpope/vim-fugitive')            -- :Git commit / status / push
+Plug('lewis6991/gitsigns.nvim')       -- hunk signs + inline blame (GitLens-style)
+Plug('sindrets/diffview.nvim')        -- commit history + diffs
 
 -- editing
 Plug('neoclide/coc.nvim', { branch = 'release' })
@@ -104,6 +105,21 @@ vim.g.go_metalinter_enabled = {}
 vim.g.go_jump_to_error = 0
 vim.g.go_fmt_command = 'goimports'
 vim.g.go_auto_sameids = 0
+
+---------------------------------------------------------------- git
+local ok_gs, gitsigns = pcall(require, 'gitsigns')
+if ok_gs then
+    gitsigns.setup({
+        current_line_blame = true, -- "author, 2 days ago · message" at end of line
+        current_line_blame_opts = { delay = 300 },
+        current_line_blame_formatter = '<author>, <author_time:%R> · <summary>',
+    })
+end
+
+local ok_dv, diffview = pcall(require, 'diffview')
+if ok_dv then
+    diffview.setup({ view = { merge_tool = { layout = 'diff3_mixed' } } })
+end
 
 ---------------------------------------------------------------- markdown
 -- Renders in normal mode, shows raw markdown on the line you're editing

@@ -43,6 +43,21 @@ map('n', '<leader>u', ':UndotreeShow<CR>', s)
 map('n', '<leader>c', ':Goyo<CR>', s)
 map('n', '<leader>ac', ':FloatermNew<CR>', s)
 
+-- git
+map('n', '<leader>gb', ':Gitsigns toggle_current_line_blame<CR>', s) -- inline blame on/off
+map('n', '<leader>gB', ':Gitsigns blame_line full=true<CR>', s)      -- full commit for this line
+map('n', '<leader>gh', ':DiffviewFileHistory %<CR>', s)              -- history of this file
+map('n', '<leader>gH', ':DiffviewFileHistory<CR>', s)                -- history of the repo
+map('n', '<leader>gd', ':DiffviewOpen<CR>', s)                       -- uncommitted changes
+map('n', '<leader>gq', ':DiffviewClose<CR>', s)
+map('n', '<leader>gs', ':Git<CR>', s)                                -- status (s stage, cc commit)
+map('n', '<leader>gc', ':Git commit<CR>', s)
+map('n', ']c', function() if vim.wo.diff then vim.cmd.normal({ ']c', bang = true }) else vim.cmd('Gitsigns nav_hunk next') end end, s)
+map('n', '[c', function() if vim.wo.diff then vim.cmd.normal({ '[c', bang = true }) else vim.cmd('Gitsigns nav_hunk prev') end end, s)
+map('n', '<leader>hp', ':Gitsigns preview_hunk<CR>', s)
+map('n', '<leader>hs', ':Gitsigns stage_hunk<CR>', s)
+map('n', '<leader>hr', ':Gitsigns reset_hunk<CR>', s)
+
 -- markdown / README
 map('n', '<leader>mr', ':RenderMarkdown toggle<CR>', s)  -- rendered <-> raw in nvim
 map('n', '<leader>mp', ':MarkdownPreviewToggle<CR>', s)  -- live preview in the browser
