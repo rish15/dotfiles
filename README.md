@@ -29,7 +29,8 @@ config/waybar/      config.jsonc, style.css, mocha.css, scripts/updates.sh
 config/swaync/      notification + control center
 config/rofi/        launcher theme
 config/alacritty/   terminal theme
-config/nvim/        Neovim (init.lua, vim-plug; installer fetches plug.vim + runs :PlugInstall)
+config/nvim/        Neovim, all Lua: init.lua → lua/config/{options,plugins,keymaps,coc}.lua
+                    (vim-plug; installer fetches plug.vim + runs :PlugInstall)
 config/starship.toml  zsh prompt (add `eval "$(starship init zsh)"` to ~/.zshrc)
 config/gtk-3.0, gtk-4.0  Catppuccin colors over adw-gtk3-dark
 install.sh

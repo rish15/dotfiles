@@ -43,8 +43,8 @@ PKGS=(
     jq socat libnotify pacman-contrib btop git
     # shell prompt
     zsh starship
-    # editor
-    neovim curl
+    # editor (node for coc/prettier, rg for :Rg, go for vim-go)
+    neovim curl ripgrep nodejs npm go
     # theme: GTK, icons, Qt, fonts
     adw-gtk-theme papirus-icon-theme qt6ct ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji
 )

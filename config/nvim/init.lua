@@ -1,6 +1,14 @@
--- Neovim config (vim-plug). Add plugins below, then :PlugInstall
-local Plug = vim.fn['plug#']
+--        _
+--       (_)
+-- __   __ _   _ __ ___     _ __    ___
+-- \ \ / / | | | '_ ` _ \   | '__|  / __|
+--  \ V /  | | | | | | | | | |     | (__
+--   \_/   |_| |_| |_| |_| |_|      \___|
 
-vim.call('plug#begin')
--- Plug('tpope/vim-sensible')
-vim.call('plug#end')
+-- Leader first so every <leader> mapping below picks it up
+vim.g.mapleader = ' '
+
+require('config.options')
+require('config.plugins')
+require('config.keymaps')
+require('config.coc')
