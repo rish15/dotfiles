@@ -14,6 +14,46 @@ map('n', 'N', 'Nzz')
 map('n', '<leader>sv', ':source $MYVIMRC<CR>', s)
 map('n', '<leader>ev', ':tabedit $MYVIMRC<CR>')
 
+-- <leader>? : keybinding cheatsheet (this config's README) in a float.
+-- Read-only, / to search, q / Esc / <leader>? to close.
+local help_win
+local function toggle_help()
+    if help_win and vim.api.nvim_win_is_valid(help_win) then
+        vim.api.nvim_win_close(help_win, true)
+        help_win = nil
+        return
+    end
+    local path = vim.fn.stdpath('config') .. '/README.md'
+    if vim.fn.filereadable(path) == 0 then
+        return vim.notify('No README at ' .. path, vim.log.levels.WARN)
+    end
+    local buf = vim.fn.bufadd(path)
+    vim.b[buf].no_gitsigns = true  -- no blame noise in the doc (see gitsigns on_attach)
+    vim.fn.bufload(buf)
+    vim.bo[buf].buflisted = false  -- keep it out of the buffer tabs
+    vim.bo[buf].modifiable = false
+    vim.bo[buf].readonly = true
+
+    local w = math.min(110, math.floor(vim.o.columns * 0.85))
+    local h = math.floor(vim.o.lines * 0.8)
+    help_win = vim.api.nvim_open_win(buf, true, {
+        relative = 'editor', style = 'minimal', border = 'rounded',
+        width = w, height = h,
+        row = math.floor((vim.o.lines - h) / 2) - 1,
+        col = math.floor((vim.o.columns - w) / 2),
+        title = ' nvim keys ', title_pos = 'center',
+    })
+    vim.wo[help_win].wrap = true
+    vim.wo[help_win].linebreak = true
+    vim.wo[help_win].cursorline = true
+    vim.wo[help_win].conceallevel = 2
+
+    for _, key in ipairs({ 'q', '<Esc>' }) do
+        vim.keymap.set('n', key, toggle_help, { buffer = buf, silent = true, nowait = true })
+    end
+end
+map('n', '<leader>?', toggle_help, { silent = true, desc = 'Keybinding cheatsheet' })
+
 -- editing
 map('n', '<F4>', '%x``x')                  -- delete matching pair of brackets
 map('n', '<leader><leader>', ':nohlsearch<CR>', s)

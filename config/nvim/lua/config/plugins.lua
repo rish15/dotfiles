@@ -90,6 +90,7 @@ if ok_gs then
         current_line_blame = true, -- "author, 2 days ago · message" at end of line
         current_line_blame_opts = { delay = 300 },
         current_line_blame_formatter = '<author>, <author_time:%R> · <summary>',
+        on_attach = function(buf) return not vim.b[buf].no_gitsigns end,
     })
 end
 

@@ -1,7 +1,7 @@
 # nvim
 
 Neovim config in Lua with vim-plug and a Catppuccin Mocha theme with a transparent background.
-Leader is **Space**.
+Leader is **Space**. Press **`<leader>?`** anytime to open this page in a floating window.
 
 ```
 init.lua                 loads the files below in order
@@ -132,6 +132,7 @@ Undo history isn't saved for SOPS files, or for anything under `/tmp`, so decryp
 
 | Key | Action |
 |---|---|
+| `<leader>?` | This cheatsheet in a float (`q` / `Esc` to close, `/` to search) |
 | `<leader>ai` | Open Claude Code |
 | `<leader>as` (n, v) | Send line / selection to Claude |
 | `<leader>ac` | Floating terminal (`exit` closes it) |
