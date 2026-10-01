@@ -43,6 +43,8 @@ PKGS=(
     jq socat libnotify pacman-contrib btop git
     # shell prompt
     zsh starship
+    # editor
+    neovim curl
     # theme: GTK, icons, Qt, fonts
     adw-gtk-theme papirus-icon-theme qt6ct ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji
 )
@@ -87,6 +89,17 @@ done
 # 4. Scripts executable, folders the config expects
 run chmod +x "$DOTFILES"/config/hypr/scripts/*.sh "$DOTFILES"/config/waybar/scripts/*.sh
 run mkdir -p "$HOME/Pictures"
+
+# 4b. Neovim: vim-plug + plugins from config/nvim
+PLUG="${XDG_DATA_HOME:-$HOME/.local/share}/nvim/site/autoload/plug.vim"
+if [[ ! -f "$PLUG" ]]; then
+    log "Installing vim-plug"
+    run curl -fsSLo "$PLUG" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+fi
+if command -v nvim >/dev/null; then
+    log "Installing nvim plugins"
+    run nvim --headless +PlugInstall +qall || warn "PlugInstall failed, run :PlugInstall inside nvim"
+fi
 
 # 5. Theme: GTK apps + icons (Catppuccin colors come from gtk-3.0/gtk-4.0 gtk.css)
 if command -v gsettings >/dev/null; then
