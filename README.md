@@ -44,7 +44,6 @@ Because the configs are symlinked, edits in `~/.config` land in the repo. Commit
 
 Neovim keys are in [config/nvim/README.md](config/nvim/README.md). Hyprland:
 
-
 | Key | Action |
 |---|---|
 | `Super+Return` | Terminal |
