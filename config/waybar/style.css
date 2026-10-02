@@ -90,10 +90,21 @@ tooltip label { color: @text; padding: 4px 6px; }
 #mpris.paused { color: @overlay1; }
 
 /* ---------- center ---------- */
-#clock {
-    color: @text;
-    font-weight: 700;
+#clock.date {
+    color: @lavender;
+    padding: 0 12px;
+}
+
+/* dedicated time capsule */
+#clock:not(.date) {
+    color: @crust;
+    background: linear-gradient(90deg, @mauve, @blue);
+    font-weight: 800;
     padding: 0 14px;
+    margin-left: 4px;
+}
+#clock:not(.date):hover {
+    background: linear-gradient(90deg, @pink, @lavender);
 }
 
 /* ---------- right ---------- */

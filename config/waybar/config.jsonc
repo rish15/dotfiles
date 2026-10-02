@@ -10,7 +10,7 @@
     "reload_style_on_change": true,
 
     "modules-left":   ["custom/launcher", "hyprland/workspaces", "hyprland/submap", "mpris"],
-    "modules-center": ["clock"],
+    "modules-center": ["clock#date", "clock"],
     "modules-right":  [
         "group/system",
         "pulseaudio",
@@ -63,9 +63,9 @@
     },
 
     // ---------- center ----------
-    "clock": {
-        "format": "  {:%H:%M}",
-        "format-alt": "  {:%a, %d %b %Y}",
+    "clock#date": {
+        "format": "\uf073  {:%a, %d %b}",
+        "interval": 60,
         "tooltip-format": "<tt>{calendar}</tt>",
         "calendar": {
             "mode": "month",
@@ -79,6 +79,12 @@
             }
         },
         "actions": { "on-scroll-up": "shift_down", "on-scroll-down": "shift_up", "on-click-right": "mode" }
+    },
+
+    "clock": {
+        "format": "\uf017  {:%H:%M}",
+        "interval": 1,
+        "tooltip-format": "{:%H:%M:%S  ·  %Z}"
     },
 
     // ---------- right ----------
