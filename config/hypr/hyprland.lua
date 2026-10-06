@@ -30,21 +30,35 @@ local exec = hl.dsp.exec_cmd
 local LAPTOP = "eDP-1"
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "1" })
 
+-- Only real screens count: Hyprland adds a placeholder "FALLBACK" (or HEADLESS-*)
+-- output when nothing else is on, which must never keep the laptop panel off.
+local function is_external(name, ignore)
+    return name ~= LAPTOP and name ~= ignore
+        and name ~= "FALLBACK" and not name:match("^HEADLESS")
+end
+
+local function laptop_on()
+    hl.monitor({ output = LAPTOP, mode = "preferred", position = "auto", scale = "1" })
+end
+
 local function sync_displays(ignore)
     local externals = 0
     for _, m in ipairs(hl.get_monitors()) do
-        if m.name ~= LAPTOP and m.name ~= ignore then externals = externals + 1 end
+        if is_external(m.name, ignore) then externals = externals + 1 end
     end
     if externals > 0 then
         hl.monitor({ output = LAPTOP, disabled = true })
     else
-        hl.monitor({ output = LAPTOP, mode = "preferred", position = "auto", scale = "1" })
+        laptop_on()
     end
 end
 
 sync_displays()
-hl.on("monitor.added",   function(m) if m.name ~= LAPTOP then sync_displays() end end)
-hl.on("monitor.removed", function(m) if m.name ~= LAPTOP then sync_displays(m.name) end end)
+hl.on("monitor.added",   function(m) if is_external(m.name) then sync_displays() end end)
+hl.on("monitor.removed", function(m) if is_external(m.name) then sync_displays(m.name) end end)
+
+-- Emergency: Super+Shift+M forces the laptop screen back on
+hl.bind("SUPER + SHIFT + M", laptop_on)
 
 ----------------------
 ---- AUTOSTART -------

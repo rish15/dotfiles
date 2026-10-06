@@ -63,6 +63,7 @@ Neovim keys are in [config/nvim/README.md](config/nvim/README.md). Hyprland:
 | `Super+[ ]` / `Super+Shift+[ ]` | Inner / outer gaps |
 | `Super+Shift+W` | Toggle waybar |
 | `Super+Shift+C` | Reload |
+| `Super+Shift+M` | Force laptop screen on (emergency) |
 
 ## Bar
 
