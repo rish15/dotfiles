@@ -25,40 +25,22 @@ local exec = hl.dsp.exec_cmd
 ----------------------
 ---- MONITORS --------
 ----------------------
--- External screen connected -> laptop panel off; unplugged -> back on.
--- Runs inside Hyprland (no background script), re-checked on every reload.
+-- Laptop panel + any external screen are both on; external sits to the right.
+-- Unplug and everything falls back to the laptop. Super+Shift+M toggles the
+-- laptop panel off/on by hand when you only want the big screen.
 local LAPTOP = "eDP-1"
-hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "1" })
+hl.monitor({ output = LAPTOP, mode = "preferred", position = "0x0",  scale = "1" })
+hl.monitor({ output = "",     mode = "preferred", position = "auto-right", scale = "1" })
 
--- Only real screens count: Hyprland adds a placeholder "FALLBACK" (or HEADLESS-*)
--- output when nothing else is on, which must never keep the laptop panel off.
-local function is_external(name, ignore)
-    return name ~= LAPTOP and name ~= ignore
-        and name ~= "FALLBACK" and not name:match("^HEADLESS")
-end
-
-local function laptop_on()
-    hl.monitor({ output = LAPTOP, mode = "preferred", position = "auto", scale = "1" })
-end
-
-local function sync_displays(ignore)
-    local externals = 0
-    for _, m in ipairs(hl.get_monitors()) do
-        if is_external(m.name, ignore) then externals = externals + 1 end
-    end
-    if externals > 0 then
-        hl.monitor({ output = LAPTOP, disabled = true })
+local laptop_enabled = true
+hl.bind("SUPER + SHIFT + M", function()
+    laptop_enabled = not laptop_enabled
+    if laptop_enabled then
+        hl.monitor({ output = LAPTOP, mode = "preferred", position = "0x0", scale = "1" })
     else
-        laptop_on()
+        hl.monitor({ output = LAPTOP, disabled = true })
     end
-end
-
-sync_displays()
-hl.on("monitor.added",   function(m) if is_external(m.name) then sync_displays() end end)
-hl.on("monitor.removed", function(m) if is_external(m.name) then sync_displays(m.name) end end)
-
--- Emergency: Super+Shift+M forces the laptop screen back on
-hl.bind("SUPER + SHIFT + M", laptop_on)
+end)
 
 ----------------------
 ---- AUTOSTART -------
