@@ -210,7 +210,7 @@ hl.bind(k("V"),             exec("cliphist list | rofi -dmenu -p ' Clipboard' | 
 hl.bind(k("SHIFT + C"),     exec("hyprctl reload"))
 hl.bind(k("SHIFT + E"),     exec(scripts .. "powermenu.sh"))
 hl.bind(k("Escape"),        exec(scripts .. "powermenu.sh"))
-hl.bind(k("L"),     exec("hyprlock"))
+hl.bind(k("L"),     exec("pidof hyprlock || hyprlock >> /tmp/hyprlock.log 2>&1"))
 hl.bind(k("F"),             hl.dsp.window.fullscreen())
 hl.bind(k("SHIFT + space"), hl.dsp.window.float({ action = "toggle" }))
 hl.bind(k("N"),             exec(scripts .. "nightlight.sh toggle"))
