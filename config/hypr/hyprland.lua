@@ -159,6 +159,7 @@ hl.config({
     misc = {
         force_default_wallpaper = 0,
         disable_hyprland_logo   = true,
+        allow_session_lock_restore = true,  -- if hyprlock crashes, it can be restarted from a TTY
         background_color        = tonumber("0x" .. c.base),
     },
     input = {
