@@ -56,6 +56,8 @@ Neovim keys are in [config/nvim/README.md](config/nvim/README.md). Hyprland:
 | `Super+Shift+Q` | Close window |
 | `Super+F` / `Super+Shift+Space` | Fullscreen / float |
 | `Super+R` | Resize mode (arrows, Esc to exit) |
+| `Super+H` / `Super+Shift+H` | Next window opens below / to the right |
+| `Super+J` | Flip split of current pair (side-by-side ↔ stacked) |
 | `Super+1..5` / `Super+Shift+1..5` | Go to / move to workspace |
 | `Super+scroll` | Cycle workspaces |
 | ``Super+` `` / ``Super+Shift+` `` | Scratchpad show / send |

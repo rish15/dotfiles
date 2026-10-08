@@ -236,6 +236,11 @@ for _, dir in ipairs({ "left", "right", "up", "down" }) do
     hl.bind(k("SHIFT + " .. dir), hl.dsp.window.move({ direction = dir }))
 end
 
+-- i3-style splits: choose where the NEXT window opens
+hl.bind(k("H"),         hl.dsp.layout("preselect d"))   -- next window opens below (stacked)
+hl.bind(k("SHIFT + H"), hl.dsp.layout("preselect r"))   -- next window opens to the right
+hl.bind(k("J"),         hl.dsp.layout("togglesplit"))   -- flip current pair: side-by-side <-> stacked
+
 -- Workspaces 1-5 (+ scroll through them)
 for i = 1, 5 do
     hl.bind(k(tostring(i)),     hl.dsp.focus({ workspace = i }))
