@@ -88,8 +88,16 @@ for src in "$DOTFILES"/config/*; do
     echo "  linked  $name"
 done
 
+# 3b. Small commands in bin/ -> ~/.local/bin (e.g. `relock`)
+run mkdir -p "$HOME/.local/bin"
+for src in "$DOTFILES"/bin/*; do
+    [[ -e "$src" ]] || continue
+    run ln -sf "$src" "$HOME/.local/bin/$(basename "$src")"
+    echo "  linked  bin/$(basename "$src")"
+done
+
 # 4. Scripts executable, folders the config expects
-run chmod +x "$DOTFILES"/config/hypr/scripts/*.sh "$DOTFILES"/config/waybar/scripts/*.sh
+run chmod +x "$DOTFILES"/config/hypr/scripts/*.sh "$DOTFILES"/config/waybar/scripts/*.sh "$DOTFILES"/bin/*
 run mkdir -p "$HOME/Pictures"
 
 # 4b. Neovim: vim-plug + plugins from config/nvim

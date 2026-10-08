@@ -34,6 +34,7 @@ config/nvim/        Neovim, all Lua: init.lua → lua/config/{options,plugins,ui
                     all nvim keys: config/nvim/README.md
 config/starship.toml  zsh prompt (add `eval "$(starship init zsh)"` to ~/.zshrc)
 config/gtk-3.0, gtk-4.0  Catppuccin colors over adw-gtk3-dark
+bin/relock          run from a TTY if the lock screen dies ("oopsie") — restarts it, apps stay open
 install.sh
 ```
 

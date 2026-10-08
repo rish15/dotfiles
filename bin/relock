@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# relock — run from a TTY (Ctrl+Alt+F3) when the lock screen died ("oopsie").
+# Restarts hyprlock inside the running Hyprland session; your apps stay open.
+
+# keep the lock log for debugging
+[[ -s /tmp/hyprlock.log ]] && cp /tmp/hyprlock.log ~/hyprlock-$(date +%F-%H%M).log
+
+# clear failed-password lockout (3 wrong tries = 10 min lockout on Arch)
+sudo faillock --user "$USER" --reset
+
+hyprctl -i 0 eval 'hl.config({ misc = { allow_session_lock_restore = true } })' >/dev/null
+if hyprctl -i 0 dispatch 'hl.dsp.exec_cmd("hyprlock >> /tmp/hyprlock.log 2>&1")' | grep -q ok; then
+    echo "Lock screen restarted. Press Ctrl+Alt+F1 (or F2) and type your password."
+else
+    echo "Couldn't reach Hyprland — it may have exited. Start a new session with: start-hyprland"
+fi
