@@ -47,7 +47,7 @@ end)
 ----------------------
 hl.on("hyprland.start", function()
     hl.exec_cmd(scripts .. "wallpaper.sh")
-    hl.exec_cmd("waybar")
+    hl.exec_cmd(scripts .. "waybar.sh")
     hl.exec_cmd("swaync")
     hl.exec_cmd("nm-applet --indicator")
     hl.exec_cmd("wl-paste --watch cliphist store")
@@ -167,7 +167,7 @@ hl.bind(k("F"),             hl.dsp.window.fullscreen())
 hl.bind(k("SHIFT + space"), hl.dsp.window.float({ action = "toggle" }))
 hl.bind(k("N"),             exec(scripts .. "nightlight.sh toggle"))
 hl.bind(k("SHIFT + N"),     exec("swaync-client -t -sw"))
-hl.bind(k("SHIFT + W"),     exec("pkill waybar || waybar"))
+hl.bind(k("SHIFT + W"),     exec("pkill -x waybar || " .. scripts .. "waybar.sh"))
 
 -- Screenshots
 hl.bind("Print",    exec([[sh -c 'f=~/Pictures/screenshot-$(date +%F-%H%M%S).png; grim "$f" && notify-send -i "$f" "Screenshot saved" "$f"']]))
