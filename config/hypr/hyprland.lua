@@ -25,13 +25,68 @@ local exec = hl.dsp.exec_cmd
 ----------------------
 ---- MONITORS --------
 ----------------------
--- Laptop panel + any external screen are both on; external sits to the right.
--- Unplug and everything falls back to the laptop. Super+P switches modes.
-local LAPTOP = "eDP-1"
-hl.monitor({ output = LAPTOP, mode = "preferred", position = "0x0",  scale = "1" })
-hl.monitor({ output = "",     mode = "preferred", position = "auto-right", scale = "1" })
+-- Display mode is picked with Super+P (scripts/display-mode.sh), which writes
+-- laptop | external | both | mirror to ~/.cache/hypr-display-mode and reloads.
+-- Applying it through a full reload is what reliably turns screens back ON.
+local LAPTOP    = "eDP-1"
+local MODE_FILE = os.getenv("HOME") .. "/.cache/hypr-display-mode"
 
--- Super+P: display menu (laptop only / external only / both / mirror)
+local function read_mode()
+    local f = io.open(MODE_FILE, "r")
+    if not f then return "both" end
+    local m = f:read("l") or "both"
+    f:close()
+    return m
+end
+
+local function write_mode(m)
+    local f = io.open(MODE_FILE, "w")
+    if f then f:write(m) f:close() end
+end
+
+local MODE   = read_mode()
+local ON     = { mode = "preferred", scale = "1" }
+local function mon(t) for k, v in pairs(ON) do if t[k] == nil then t[k] = v end end hl.monitor(t) end
+
+-- "" = every external screen; the laptop rule is added last so it wins for eDP-1
+if MODE == "laptop" then
+    hl.monitor({ output = "", disabled = true })
+    mon({ output = LAPTOP, position = "0x0" })
+elseif MODE == "external" then
+    mon({ output = "", position = "auto" })
+    hl.monitor({ output = LAPTOP, disabled = true })
+elseif MODE == "mirror" then
+    mon({ output = "", position = "auto", mirror = LAPTOP })
+    mon({ output = LAPTOP, position = "0x0" })
+else -- both
+    mon({ output = "", position = "auto-right" })
+    mon({ output = LAPTOP, position = "0x0" })
+end
+
+local function is_external(name, ignore)
+    return name ~= LAPTOP and name ~= ignore
+        and name ~= "FALLBACK" and not name:match("^HEADLESS")
+end
+
+-- Safety: if the last external screen is unplugged while the laptop is off,
+-- fall back to "both" so you never end up with a dark laptop.
+hl.on("monitor.removed", function(m)
+    if MODE ~= "external" or not is_external(m.name) then return end
+    for _, o in ipairs(hl.get_monitors()) do
+        if is_external(o.name, m.name) then return end
+    end
+    write_mode("both")
+    hl.exec_cmd("hyprctl reload")
+end)
+
+-- Every login starts in "both"
+hl.on("hyprland.start", function()
+    if MODE ~= "both" then
+        write_mode("both")
+        hl.exec_cmd("hyprctl reload")
+    end
+end)
+
 hl.bind("SUPER + P", hl.dsp.exec_cmd(scripts .. "display-mode.sh"))
 
 ----------------------
