@@ -26,21 +26,13 @@ local exec = hl.dsp.exec_cmd
 ---- MONITORS --------
 ----------------------
 -- Laptop panel + any external screen are both on; external sits to the right.
--- Unplug and everything falls back to the laptop. Super+Shift+M toggles the
--- laptop panel off/on by hand when you only want the big screen.
+-- Unplug and everything falls back to the laptop. Super+P switches modes.
 local LAPTOP = "eDP-1"
 hl.monitor({ output = LAPTOP, mode = "preferred", position = "0x0",  scale = "1" })
 hl.monitor({ output = "",     mode = "preferred", position = "auto-right", scale = "1" })
 
-local laptop_enabled = true
-hl.bind("SUPER + SHIFT + M", function()
-    laptop_enabled = not laptop_enabled
-    if laptop_enabled then
-        hl.monitor({ output = LAPTOP, mode = "preferred", position = "0x0", scale = "1" })
-    else
-        hl.monitor({ output = LAPTOP, disabled = true })
-    end
-end)
+-- Super+P: display menu (laptop only / external only / both / mirror)
+hl.bind("SUPER + P", hl.dsp.exec_cmd(scripts .. "display-mode.sh"))
 
 ----------------------
 ---- AUTOSTART -------
