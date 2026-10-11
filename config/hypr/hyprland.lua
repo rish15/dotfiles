@@ -25,16 +25,24 @@ local exec = hl.dsp.exec_cmd
 ----------------------
 ---- MONITORS --------
 ----------------------
--- Display mode is picked with Super+P (scripts/display-mode.sh), which writes
--- laptop | external | both | mirror to ~/.cache/hypr-display-mode and reloads.
--- Applying it through a full reload is what reliably turns screens back ON.
+-- Rule #1: the laptop panel (eDP-1) is NEVER disabled. When it isn't wanted it is
+-- only powered off (DPMS) and parked out of the mouse's reach. That way Hyprland
+-- always has a real screen, never swaps in a temporary FALLBACK output, and
+-- hyprlock can't crash when the external monitor disappears (unplug / DP sleep).
+--
+-- Modes (Super+P, stored in ~/.cache/hypr-display-mode, every login = external):
+--   external  external screen(s) only if any are connected, else laptop  [default]
+--   laptop    laptop only, external screens disabled
+--   both      laptop left + external right
+--   mirror    external screens mirror the laptop
 local LAPTOP    = "eDP-1"
+local PARKED    = "-3000x0"   -- off to the left with a gap: mouse can't reach it
 local MODE_FILE = os.getenv("HOME") .. "/.cache/hypr-display-mode"
 
 local function read_mode()
     local f = io.open(MODE_FILE, "r")
-    if not f then return "both" end
-    local m = f:read("l") or "both"
+    if not f then return "external" end
+    local m = f:read("l") or "external"
     f:close()
     return m
 end
@@ -44,47 +52,79 @@ local function write_mode(m)
     if f then f:write(m) f:close() end
 end
 
-local MODE   = read_mode()
-local ON     = { mode = "preferred", scale = "1" }
-local function mon(t) for k, v in pairs(ON) do if t[k] == nil then t[k] = v end end hl.monitor(t) end
-
--- "" = every external screen; the laptop rule is added last so it wins for eDP-1
-if MODE == "laptop" then
-    hl.monitor({ output = "", disabled = true })
-    mon({ output = LAPTOP, position = "0x0" })
-elseif MODE == "external" then
-    mon({ output = "", position = "auto" })
-    hl.monitor({ output = LAPTOP, disabled = true })
-elseif MODE == "mirror" then
-    mon({ output = "", position = "auto", mirror = LAPTOP })
-    mon({ output = LAPTOP, position = "0x0" })
-else -- both
-    mon({ output = "", position = "auto-right" })
-    mon({ output = LAPTOP, position = "0x0" })
-end
-
 local function is_external(name, ignore)
     return name ~= LAPTOP and name ~= ignore
         and name ~= "FALLBACK" and not name:match("^HEADLESS")
 end
 
--- Safety: if the last external screen is unplugged while the laptop is off,
--- fall back to "both" so you never end up with a dark laptop.
-hl.on("monitor.removed", function(m)
-    if MODE ~= "external" or not is_external(m.name) then return end
-    for _, o in ipairs(hl.get_monitors()) do
-        if is_external(o.name, m.name) then return end
+local function externals(ignore)
+    local list = {}
+    for _, m in ipairs(hl.get_monitors()) do
+        if is_external(m.name, ignore) then list[#list + 1] = m.name end
     end
-    write_mode("both")
-    hl.exec_cmd("hyprctl reload")
-end)
+    return list
+end
 
--- Every login starts in "both"
-hl.on("hyprland.start", function()
-    if MODE ~= "both" then
-        write_mode("both")
-        hl.exec_cmd("hyprctl reload")
+local MODE = read_mode()
+local EXT  = externals()
+local function mon(t)
+    t.mode, t.scale = t.mode or "preferred", t.scale or "1"
+    hl.monitor(t)
+end
+
+local laptop_dark = false   -- laptop panel powered off (but still present)?
+
+if MODE == "laptop" then
+    hl.monitor({ output = "", disabled = true })
+    mon({ output = LAPTOP, position = "0x0" })
+elseif MODE == "both" then
+    mon({ output = "", position = "auto-right" })
+    mon({ output = LAPTOP, position = "0x0" })
+elseif MODE == "mirror" then
+    mon({ output = "", position = "auto", mirror = LAPTOP })
+    mon({ output = LAPTOP, position = "0x0" })
+else -- external (default)
+    if #EXT > 0 then
+        mon({ output = "", position = "0x0" })
+        mon({ output = LAPTOP, position = PARKED })   -- stays enabled, just dark
+        laptop_dark = true
+        for i = 1, 5 do
+            hl.workspace_rule({ workspace = tostring(i), monitor = EXT[1], default = (i == 1) })
+        end
+    else
+        mon({ output = "", position = "auto-right" })
+        mon({ output = LAPTOP, position = "0x0" })
     end
+end
+
+-- Apply the laptop's power state and pull workspaces onto the external screen
+-- once outputs have settled after this (re)load.
+hl.timer(function()
+    hl.dispatch(hl.dsp.dpms({ action = laptop_dark and "off" or "on", monitor = LAPTOP }))
+    if laptop_dark then
+        for i = 1, 5 do
+            pcall(function() hl.dispatch(hl.dsp.workspace.move({ monitor = EXT[1], workspace = i })) end)
+        end
+        hl.dispatch(hl.dsp.focus({ monitor = EXT[1] }))
+    end
+end, { timeout = 600, type = "oneshot" })
+
+-- External plugged/unplugged (or the DP monitor dropping out while locked):
+-- recompute with a reload. The laptop panel already exists, so there is never a
+-- moment without a screen; the reload just powers it back on.
+local pending = false
+local function rescan()
+    if pending or MODE == "laptop" then return end
+    pending = true
+    hl.timer(function() hl.exec_cmd("hyprctl reload") end, { timeout = 700, type = "oneshot" })
+end
+hl.on("monitor.added",   function(m) if is_external(m.name) then rescan() end end)
+hl.on("monitor.removed", function(m) if is_external(m.name) then rescan() end end)
+
+-- Every login starts in the default mode, computed once real monitors exist
+hl.on("hyprland.start", function()
+    write_mode("external")
+    hl.timer(function() hl.exec_cmd("hyprctl reload") end, { timeout = 1500, type = "oneshot" })
 end)
 
 hl.bind("SUPER + P", hl.dsp.exec_cmd(scripts .. "display-mode.sh"))
@@ -218,8 +258,8 @@ hl.bind(k("SHIFT + N"),     exec("swaync-client -t -sw"))
 hl.bind(k("SHIFT + W"),     exec("pkill -x waybar || " .. scripts .. "waybar.sh"))
 
 -- Screenshots
-hl.bind("Print",    exec([[sh -c 'f=~/Pictures/screenshot-$(date +%F-%H%M%S).png; grim "$f" && notify-send -i "$f" "Screenshot saved" "$f"']]))
-hl.bind(k("Print"), exec([[sh -c 'f=~/Pictures/screenshot-$(date +%F-%H%M%S).png; grim -g "$(slurp)" "$f" && wl-copy < "$f" && notify-send -i "$f" "Region copied" "$f"']]))
+hl.bind("Print",    exec(scripts .. "screenshot.sh full"))
+hl.bind(k("Print"), exec(scripts .. "screenshot.sh region"))
 hl.bind(k("SHIFT + S"), exec("flameshot gui"))
 
 -- Gaps (was $mod+[ / ] and Shift variants)
