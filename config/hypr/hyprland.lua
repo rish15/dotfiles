@@ -137,6 +137,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd(scripts .. "waybar.sh")
     hl.exec_cmd("swaync")
     hl.exec_cmd("nm-applet --indicator")
+    hl.exec_cmd([[sh -c 'rm -f "$XDG_RUNTIME_DIR/ssh-agent.socket"; exec ssh-agent -D -a "$XDG_RUNTIME_DIR/ssh-agent.socket"']])
     hl.exec_cmd("wl-paste --watch cliphist store")
     hl.exec_cmd("gammastep -l geoclue2")
     hl.exec_cmd("hypridle")
@@ -152,6 +153,8 @@ hl.env("HYPRCURSOR_SIZE", "24")
 hl.env("QT_QPA_PLATFORM", "wayland")
 hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
 hl.env("MOZ_ENABLE_WAYLAND", "1")
+-- one ssh-agent per login (see AUTOSTART); ssh/git find it through this socket
+hl.env("SSH_AUTH_SOCK", (os.getenv("XDG_RUNTIME_DIR") or "/tmp") .. "/ssh-agent.socket")
 
 ----------------------
 ---- LOOK & INPUT ----

@@ -133,6 +133,13 @@ if pgrep -f noctalia >/dev/null; then
     warn "  grep -ril noctalia ~/.config/autostart /etc/xdg/autostart ~/.config/systemd/user 2>/dev/null"
 fi
 
+# 5b. SSH: let the per-login ssh-agent remember key passphrases after first use
+mkdir -p "$HOME/.ssh" && chmod 700 "$HOME/.ssh"
+if ! grep -qi '^\s*AddKeysToAgent' "$HOME/.ssh/config" 2>/dev/null; then
+    log "Adding 'AddKeysToAgent yes' to ~/.ssh/config"
+    [[ $DRY == 1 ]] || { printf '\nHost *\n    AddKeysToAgent yes\n' >> "$HOME/.ssh/config"; chmod 600 "$HOME/.ssh/config"; }
+fi
+
 # 6. Services
 run systemctl --user enable --now pipewire pipewire-pulse wireplumber 2>/dev/null || true
 run sudo systemctl enable --now bluetooth 2>/dev/null || true
