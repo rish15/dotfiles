@@ -64,7 +64,7 @@ Neovim keys are in [config/nvim/README.md](config/nvim/README.md). Hyprland:
 | `Super+1..5` / `Super+Shift+1..5` | Go to / move to workspace |
 | `Super+scroll` | Cycle workspaces |
 | ``Super+` `` / ``Super+Shift+` `` | Scratchpad show / send |
-| `Print` / `Super+Print` / `Super+Shift+S` | Full / region / flameshot screenshot |
+| `Print` / `Shift+Print` / `Super+Shift+S` | Region (copied) / full screen / flameshot screenshot |
 | `Super+[ ]` / `Super+Shift+[ ]` | Inner / outer gaps |
 | `Super+Shift+W` | Toggle waybar |
 | `Super+Shift+C` | Reload |

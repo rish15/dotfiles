@@ -258,8 +258,8 @@ hl.bind(k("SHIFT + N"),     exec("swaync-client -t -sw"))
 hl.bind(k("SHIFT + W"),     exec("pkill -x waybar || " .. scripts .. "waybar.sh"))
 
 -- Screenshots
-hl.bind("Print",    exec(scripts .. "screenshot.sh full"))
-hl.bind(k("Print"), exec(scripts .. "screenshot.sh region"))
+hl.bind("Print",         exec(scripts .. "screenshot.sh region"))   -- select area -> saved + copied
+hl.bind("SHIFT + Print", exec(scripts .. "screenshot.sh full"))     -- whole focused screen
 hl.bind(k("SHIFT + S"), exec("flameshot gui"))
 
 -- Gaps (was $mod+[ / ] and Shift variants)
