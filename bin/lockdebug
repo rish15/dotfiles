@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# lockdebug — collect everything about lock-screen crashes into ONE file.
+# Works from a TTY or inside Hyprland. Attach the printed file when asking for help.
+out=~/lockdebug-$(date +%F-%H%M).txt
+rt=/run/user/$(id -u)
+sec() { printf '\n\n===== %s =====\n' "$1"; }
+
+{
+sec "versions"
+pacman -Q hyprland hyprlock hypridle hyprutils hyprlang hyprgraphics aquamarine mesa 2>&1
+uname -r
+lspci 2>/dev/null | grep -iE 'vga|3d|display'
+
+sec "running now"
+pgrep -a 'Hyprland|hyprlock|hypridle|swayidle|swaylock|noctalia|qs' || echo none
+
+sec "hyprlock log (/tmp/hyprlock.log, last 150 lines)"
+tail -n 150 /tmp/hyprlock.log 2>&1
+for f in ~/hyprlock-*.log; do [[ -f $f ]] && { sec "$f (last 80)"; tail -n 80 "$f"; }; done
+
+for d in "$rt"/hypr/*/; do
+    [[ -f $d/hyprland.log ]] || continue
+    sec "Hyprland log $d (lock/session/dpms/error lines, last 200)"
+    grep -iE 'lock|session|dpms|crash|error|err |fatal|output|monitor' "$d/hyprland.log" | tail -n 200
+    sec "Hyprland log $d (last 60 lines raw)"
+    tail -n 60 "$d/hyprland.log"
+done
+
+sec "journal this boot: hypr*/pam/faillock/logind/sleep (last 200)"
+journalctl -b --no-pager 2>/dev/null | grep -iE 'hyprlock|hypridle|hyprland|pam_|faillock|logind|suspend|sleep|lid' | tail -n 200
+
+sec "previous boot (same filter, last 100)"
+journalctl -b -1 --no-pager 2>/dev/null | grep -iE 'hyprlock|hypridle|hyprland|pam_|faillock|logind|suspend|lid' | tail -n 100
+
+sec "coredumps"
+coredumpctl list --no-pager 2>&1 | tail -n 20
+
+sec "faillock"
+faillock --user "$USER" 2>&1
+
+sec "pam: /etc/pam.d/hyprlock"
+cat /etc/pam.d/hyprlock 2>&1
+
+sec "logind lid/idle settings"
+grep -hvE '^\s*#|^\s*$' /etc/systemd/logind.conf /etc/systemd/logind.conf.d/*.conf 2>/dev/null
+
+sec "hypridle.conf"
+cat ~/.config/hypr/hypridle.conf 2>&1
+sec "hyprlock.conf"
+cat ~/.config/hypr/hyprlock.conf 2>&1
+sec "lockscreen bg"
+ls -lL ~/.cache/lockscreen.jpg 2>&1
+sec "dotfiles version"
+git -C ~/dotfiles log --oneline -3 2>&1
+} > "$out" 2>&1
+
+echo "Saved: $out"
+echo "Attach that file in the chat."
