@@ -54,7 +54,7 @@ Neovim keys are in [config/nvim/README.md](config/nvim/README.md). Hyprland:
 | `Super+Shift+N` | Control center (notifications, toggles, media, sliders) |
 | `Super+N` | Toggle night light |
 | `Super+Escape` / `Super+Shift+E` | Power menu |
-| `Super+L` | Lock (no auto-lock; screen just turns off after 10 min idle) |
+| `Super+L` | Lock (no auto-lock, no idle screen-off) |
 | `Super+Shift+Q` | Close window |
 | `Super+F` / `Super+Shift+Space` | Fullscreen / float |
 | `Super+R` | Resize mode (arrows, Esc to exit) |
