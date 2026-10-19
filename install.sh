@@ -38,6 +38,8 @@ PKGS=(
     swaybg cliphist wl-clipboard grim slurp flameshot
     # fingerprint (lock screen / sudo) + its popup
     fprintd zenity
+    # key remapping (Caps Lock -> Shift)
+    keyd
     # night light, brightness, audio, media, network, bluetooth
     gammastep brightnessctl pipewire wireplumber pavucontrol playerctl
     network-manager-applet bluez bluez-utils blueman
@@ -159,6 +161,14 @@ if [[ -f /usr/lib/security/pam_fprintd.so && -f /etc/pam.d/sudo ]]; then
     run sudo sed -i '1a auth      sufficient   pam_fprintd.so' /etc/pam.d/sudo
     run sudo sed -i '1a auth      optional     pam_exec.so quiet /usr/local/bin/fingerprint-prompt' /etc/pam.d/sudo
     [[ $DRY == 1 ]] || echo 'session   optional     pam_exec.so quiet /usr/local/bin/fingerprint-prompt done' | sudo tee -a /etc/pam.d/sudo >/dev/null
+fi
+
+# 5e. Caps Lock acts as Shift (keyd)
+if command -v keyd >/dev/null; then
+    log "keyd: Caps Lock -> Shift"
+    run sudo install -D -m 644 "$DOTFILES/system/keyd.conf" /etc/keyd/default.conf
+    run sudo systemctl enable --now keyd
+    run sudo keyd reload
 fi
 
 # 6. Services
