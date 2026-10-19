@@ -68,8 +68,30 @@ fi
 # 2. Packages
 if [[ $INSTALL_PKGS == 1 ]]; then
     command -v pacman >/dev/null || { warn "pacman not found — use --no-pkgs on non-Arch"; exit 1; }
+
+    # 2a. bootstrap: build tools + AUR helper (CachyOS ships paru in its repos)
+    log "Bootstrapping base-devel, git, usbutils, paru"
+    run sudo pacman -Syu --needed --noconfirm base-devel git usbutils
+    if ! command -v paru >/dev/null; then
+        run sudo pacman -S --needed --noconfirm paru 2>/dev/null || {
+            log "Building paru-bin from the AUR"
+            tmp=$(mktemp -d)
+            run git clone https://aur.archlinux.org/paru-bin.git "$tmp/paru-bin"
+            [[ $DRY == 1 ]] || (cd "$tmp/paru-bin" && makepkg -si --noconfirm)
+        }
+    fi
+
+    # 2b. hardware-specific AUR drivers (installed before fprintd so it links
+    #     against the TOD build of libfprint). --ask 4 auto-accepts replacing
+    #     the stock libfprint if it's already there.
+    if lsusb 2>/dev/null | grep -qi '27c6:550a'; then
+        log "Goodix 27c6:550a fingerprint reader found: installing Lenovo TOD driver (AUR)"
+        run paru -S --needed --noconfirm --ask 4 libfprint-tod libfprint-2-tod1-goodix
+    fi
+
+    # 2c. everything else from the official repos
     log "Installing packages"
-    run sudo pacman -Syu --needed --noconfirm "${PKGS[@]}"
+    run sudo pacman -S --needed --noconfirm --ask 4 "${PKGS[@]}"
 fi
 
 # 3. Symlink every dir in config/ into ~/.config
@@ -185,3 +207,10 @@ if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
 fi
 
 log "Done. Log out and pick Hyprland at the login screen if you're not in it yet."
+cat <<'NOTE'
+
+One-time manual steps (can't be automated):
+  fprintd-enroll                        register a finger (lock screen + sudo)
+  fish_add_path ~/.local/bin            so fish finds relock / lockdebug
+  ssh-add / first git push              enter your SSH key passphrase once per login
+NOTE

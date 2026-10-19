@@ -18,6 +18,7 @@ Already cloned:
 ~/dotfiles/install.sh --dry-run  # show what would happen
 ```
 
+The installer also installs every package the setup uses (official repos + AUR via paru, incl. the Goodix fingerprint driver when that sensor is present).
 The installer symlinks every folder in `config/` into `~/.config/`. Existing configs get moved to `~/.dotfiles-backup/<timestamp>/`. It's safe to run again.
 
 ## Layout
