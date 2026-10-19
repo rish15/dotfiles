@@ -238,6 +238,14 @@ hl.window_rule({ name = "float-pavucontrol", match = { class = "^(org.pulseaudio
 hl.window_rule({ name = "float-nm-editor",   match = { class = "^(nm-connection-editor)$" },       float = true, center = true })
 hl.window_rule({ name = "float-blueman",     match = { class = "^(blueman-manager)$" },            float = true, center = true })
 
+-- sudo fingerprint popup (system/fingerprint-prompt): floating, centered, on every
+-- workspace, and it doesn't steal focus from the terminal
+hl.window_rule({
+    name  = "fingerprint-prompt",
+    match = { class = "^(zenity|org.gnome.Zenity)$", title = "^(Authentication)$" },
+    float = true, center = true, pin = true, no_initial_focus = true,
+})
+
 -- Frosted glass behind the bar, launcher and notification center
 for _, ns in ipairs({ "waybar", "rofi", "swaync-control-center", "swaync-notification-window" }) do
     hl.layer_rule({ name = "blur-" .. ns, match = { namespace = ns }, blur = true, ignore_alpha = 0.3 })
