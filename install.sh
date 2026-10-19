@@ -36,6 +36,8 @@ PKGS=(
     waybar rofi-wayland swaync alacritty
     # wallpaper, clipboard, screenshots
     swaybg cliphist wl-clipboard grim slurp flameshot
+    # fingerprint (lock screen / sudo)
+    fprintd
     # night light, brightness, audio, media, network, bluetooth
     gammastep brightnessctl pipewire wireplumber pavucontrol playerctl
     network-manager-applet bluez bluez-utils blueman
