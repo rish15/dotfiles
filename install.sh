@@ -149,6 +149,18 @@ if [[ -f /etc/security/faillock.conf ]] && ! grep -qE '^\s*deny\s*=\s*0' /etc/se
     grep -qE '^\s*deny' /etc/security/faillock.conf || [[ $DRY == 1 ]] || echo 'deny = 0' | sudo tee -a /etc/security/faillock.conf >/dev/null
 fi
 
+# 5d. Fingerprint for sudo + an on-screen "touch the sensor" prompt
+#     (needs fprintd and an enrolled finger; skipped otherwise)
+if [[ -f /usr/lib/security/pam_fprintd.so && -f /etc/pam.d/sudo ]]; then
+    log "sudo: fingerprint first (with desktop prompt), password fallback"
+    # root-owned copy: PAM runs it as root, so it must not live in $HOME
+    run sudo install -m 755 -o root -g root "$DOTFILES/system/fingerprint-prompt" /usr/local/bin/fingerprint-prompt
+    run sudo sed -i -e '/pam_fprintd\.so/d' -e '/fingerprint-prompt/d' /etc/pam.d/sudo
+    run sudo sed -i '1a auth      sufficient   pam_fprintd.so' /etc/pam.d/sudo
+    run sudo sed -i '1a auth      optional     pam_exec.so quiet /usr/local/bin/fingerprint-prompt' /etc/pam.d/sudo
+    [[ $DRY == 1 ]] || echo 'session   optional     pam_exec.so quiet /usr/local/bin/fingerprint-prompt done' | sudo tee -a /etc/pam.d/sudo >/dev/null
+fi
+
 # 6. Services
 run systemctl --user enable --now pipewire pipewire-pulse wireplumber 2>/dev/null || true
 run sudo systemctl enable --now bluetooth 2>/dev/null || true

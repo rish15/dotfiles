@@ -37,6 +37,7 @@ config/starship.toml  zsh prompt (add `eval "$(starship init zsh)"` to ~/.zshrc)
 config/gtk-3.0, gtk-4.0  Catppuccin colors over adw-gtk3-dark
 bin/relock          run from a TTY if the lock screen dies ("oopsie") — restarts it, apps stay open
 bin/lockdebug       bundles every lock-related log into ~/lockdebug-<date>.txt
+system/fingerprint-prompt  copied to /usr/local/bin by install.sh: on-screen "touch the sensor" prompt for sudo
 install.sh
 ```
 

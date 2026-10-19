@@ -1,0 +1,25 @@
+#!/bin/sh
+# Installed to /usr/local/bin/fingerprint-prompt; called by PAM (pam_exec) from
+# /etc/pam.d/sudo so a fingerprint request is visible on whatever screen/workspace
+# you're on, not just in the terminal that ran sudo.
+#   fingerprint-prompt          -> "Touch the fingerprint sensor" (stays until done)
+#   fingerprint-prompt done     -> replaces it with a short "Authenticated" toast
+u="${PAM_RUSER:-${SUDO_USER:-$PAM_USER}}"
+[ -n "$u" ] && [ "$u" != root ] || exit 0
+uid=$(id -u "$u" 2>/dev/null) || exit 0
+bus="/run/user/$uid/bus"
+[ -S "$bus" ] || exit 0
+
+notify() {
+    runuser -u "$u" -- env DBUS_SESSION_BUS_ADDRESS="unix:path=$bus" \
+        timeout 2 notify-send -a "Authentication" -i auth-fingerprint \
+        -h string:x-canonical-private-synchronous:fingerprint-auth "$@" >/dev/null 2>&1
+}
+
+if [ "$1" = done ]; then
+    notify -u low -t 1500 "Authenticated" "${PAM_SERVICE:-sudo}"
+else
+    notify -u critical "Touch the fingerprint sensor" \
+        "${PAM_SERVICE:-sudo} is asking for authentication — or type your password in the terminal"
+fi
+exit 0
