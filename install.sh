@@ -140,6 +140,13 @@ if ! grep -qi '^\s*AddKeysToAgent' "$HOME/.ssh/config" 2>/dev/null; then
     [[ $DRY == 1 ]] || { printf '\nHost *\n    AddKeysToAgent yes\n' >> "$HOME/.ssh/config"; chmod 600 "$HOME/.ssh/config"; }
 fi
 
+# 5c. No lockout after wrong passwords (Arch default: 3 tries -> 10 min lock)
+if [[ -f /etc/security/faillock.conf ]] && ! grep -qE '^\s*deny\s*=\s*0' /etc/security/faillock.conf; then
+    log "Disabling faillock lockout (deny = 0)"
+    run sudo sed -i -E 's/^#?\s*deny\s*=.*/deny = 0/' /etc/security/faillock.conf
+    grep -qE '^\s*deny' /etc/security/faillock.conf || [[ $DRY == 1 ]] || echo 'deny = 0' | sudo tee -a /etc/security/faillock.conf >/dev/null
+fi
+
 # 6. Services
 run systemctl --user enable --now pipewire pipewire-pulse wireplumber 2>/dev/null || true
 run sudo systemctl enable --now bluetooth 2>/dev/null || true
