@@ -189,8 +189,8 @@ fi
 if command -v keyd >/dev/null; then
     log "keyd: Caps Lock -> Shift"
     run sudo install -D -m 644 "$DOTFILES/system/keyd.conf" /etc/keyd/default.conf
-    run sudo systemctl enable --now keyd
-    run sudo keyd reload
+    run sudo systemctl enable keyd
+    run sudo systemctl restart keyd   # (re)reads /etc/keyd/default.conf
 fi
 
 # 6. Services
