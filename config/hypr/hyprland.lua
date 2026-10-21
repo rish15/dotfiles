@@ -266,7 +266,11 @@ hl.bind(k("F"),             hl.dsp.window.fullscreen())
 hl.bind(k("SHIFT + space"), hl.dsp.window.float({ action = "toggle" }))
 hl.bind(k("N"),             exec(scripts .. "nightlight.sh toggle"))
 hl.bind(k("SHIFT + N"),     exec("swaync-client -t -sw"))
-hl.bind(k("SHIFT + W"),     exec("pkill -x waybar || " .. scripts .. "waybar.sh"))
+-- Hide/show the bar instantly (SIGUSR1 toggles waybar's visibility without
+-- restarting it); starts it if it isn't running
+local bar_toggle = exec("pkill -USR1 -x waybar || " .. scripts .. "waybar.sh")
+hl.bind(k("B"),             bar_toggle)
+hl.bind(k("SHIFT + W"),     bar_toggle)
 
 -- Screenshots
 hl.bind("Print",         exec(scripts .. "screenshot.sh region"))   -- select area -> saved + copied
