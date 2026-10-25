@@ -1,0 +1,4 @@
+# Installed to /etc/udev/rules.d/ by install.sh.
+# Keep the Goodix 27c6:550a fingerprint reader awake: after USB autosuspend the
+# TOD driver often stops answering, so fingerprint unlock silently dies after idle.
+ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="27c6", ATTR{idProduct}=="550a", TEST=="power/control", ATTR{power/control}="on"

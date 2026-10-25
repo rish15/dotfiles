@@ -38,6 +38,7 @@ config/starship.toml  zsh prompt (add `eval "$(starship init zsh)"` to ~/.zshrc)
 config/gtk-3.0, gtk-4.0  Catppuccin colors over adw-gtk3-dark
 bin/relock          run from a TTY if the lock screen dies ("oopsie") — restarts it, apps stay open
 bin/lockdebug       bundles every lock-related log into ~/lockdebug-<date>.txt
+system/99-fingerprint-no-autosuspend.rules → /etc/udev/rules.d: keeps the Goodix reader awake
 system/keyd.conf    → /etc/keyd/default.conf: Caps Lock acts as Shift
 system/fingerprint-prompt  copied to /usr/local/bin by install.sh: centered "touch the sensor" popup for sudo
 install.sh

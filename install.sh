@@ -173,6 +173,14 @@ if [[ -f /etc/security/faillock.conf ]] && ! grep -qE '^\s*deny\s*=\s*0' /etc/se
     grep -qE '^\s*deny' /etc/security/faillock.conf || [[ $DRY == 1 ]] || echo 'deny = 0' | sudo tee -a /etc/security/faillock.conf >/dev/null
 fi
 
+# 5c2. Fingerprint reader: never USB-autosuspend it (it stops responding after idle)
+if lsusb 2>/dev/null | grep -qi '27c6:550a'; then
+    log "Fingerprint reader: disabling USB autosuspend"
+    run sudo install -m 644 "$DOTFILES/system/99-fingerprint-no-autosuspend.rules" /etc/udev/rules.d/
+    run sudo udevadm control --reload
+    run sudo udevadm trigger --subsystem-match=usb --attr-match=idVendor=27c6
+fi
+
 # 5d. Fingerprint for sudo + an on-screen "touch the sensor" prompt
 #     (needs fprintd and an enrolled finger; skipped otherwise)
 if [[ -f /usr/lib/security/pam_fprintd.so && -f /etc/pam.d/sudo ]]; then
