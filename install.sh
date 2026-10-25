@@ -188,7 +188,7 @@ if [[ -f /usr/lib/security/pam_fprintd.so && -f /etc/pam.d/sudo ]]; then
     # root-owned copy: PAM runs it as root, so it must not live in $HOME
     run sudo install -m 755 -o root -g root "$DOTFILES/system/fingerprint-prompt" /usr/local/bin/fingerprint-prompt
     run sudo sed -i -e '/pam_fprintd\.so/d' -e '/fingerprint-prompt/d' /etc/pam.d/sudo
-    run sudo sed -i '1a auth      sufficient   pam_fprintd.so' /etc/pam.d/sudo
+    run sudo sed -i '1a auth      sufficient   pam_fprintd.so timeout=300 max-tries=5' /etc/pam.d/sudo
     run sudo sed -i '1a auth      optional     pam_exec.so quiet /usr/local/bin/fingerprint-prompt' /etc/pam.d/sudo
     [[ $DRY == 1 ]] || echo 'session   optional     pam_exec.so quiet /usr/local/bin/fingerprint-prompt done' | sudo tee -a /etc/pam.d/sudo >/dev/null
 fi

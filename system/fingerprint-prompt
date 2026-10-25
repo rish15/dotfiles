@@ -36,7 +36,7 @@ $as_user env XDG_RUNTIME_DIR="$rt" WAYLAND_DISPLAY="$wl" GDK_BACKEND=wayland \
     DBUS_SESSION_BUS_ADDRESS="unix:path=$rt/bus" \
     setsid -f sh -c 'zenity --info --title="Authentication" --icon=auth-fingerprint \
         --text="<big><b>Touch the fingerprint sensor</b></big>\n\n$1 is asking for authentication.\nOr type your password in the terminal." \
-        --ok-label="Hide" --width=380 --timeout=30 & echo $! > "$0"' "$pidf" "${PAM_SERVICE:-sudo}" \
+        --ok-label="Hide" --width=380 & echo $! > "$0"' "$pidf" "${PAM_SERVICE:-sudo}" \
     </dev/null >>"$log" 2>&1
 echo "  popup launched on $wl for $u" >> "$log"
 exit 0
