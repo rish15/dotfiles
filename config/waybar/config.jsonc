@@ -16,6 +16,7 @@
         "pulseaudio",
         "backlight",
         "network",
+        "custom/netspeed",
         "bluetooth",
         "battery",
         "custom/updates",
@@ -127,6 +128,14 @@
         "tooltip-format-disconnected": "Offline",
         "interval": 5,
         "on-click": "nm-connection-editor"
+    },
+
+    "custom/netspeed": {
+        "exec": "~/.config/waybar/scripts/netspeed.sh",
+        "return-type": "json",
+        "restart-interval": 5,
+        "format": "{}",
+        "on-click": "alacritty -e btop"
     },
 
     "bluetooth": {

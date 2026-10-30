@@ -33,7 +33,7 @@ tooltip label { color: @text; padding: 4px 6px; }
 
 #custom-launcher, #workspaces, #submap, #mpris, #clock,
 #cpu, #memory, #temperature, #disk,
-#pulseaudio, #backlight, #network, #bluetooth, #battery,
+#pulseaudio, #backlight, #network, #custom-netspeed, #bluetooth, #battery,
 #custom-updates, #idle_inhibitor, #custom-nightlight, #tray,
 #custom-notification, #custom-power {
     padding: 0 10px;
@@ -44,7 +44,7 @@ tooltip label { color: @text; padding: 4px 6px; }
 
 #custom-launcher:hover, #mpris:hover, #clock:hover,
 #cpu:hover, #memory:hover, #temperature:hover, #disk:hover,
-#pulseaudio:hover, #backlight:hover, #network:hover, #bluetooth:hover, #battery:hover,
+#pulseaudio:hover, #backlight:hover, #network:hover, #custom-netspeed:hover, #bluetooth:hover, #battery:hover,
 #custom-updates:hover, #idle_inhibitor:hover, #custom-nightlight:hover,
 #custom-notification:hover {
     background: alpha(@surface0, 0.9);
@@ -120,6 +120,8 @@ tooltip label { color: @text; padding: 4px 6px; }
 #backlight         { color: @yellow; }
 #network           { color: @teal; }
 #network.disconnected { color: @red; }
+#custom-netspeed         { color: @sky; }
+#custom-netspeed.offline { color: @overlay0; }
 #bluetooth         { color: @blue; }
 #bluetooth.connected { color: @sapphire; }
 

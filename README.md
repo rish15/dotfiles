@@ -27,7 +27,7 @@ The installer symlinks every folder in `config/` into `~/.config/`. Existing con
 config/hypr/        hyprland.lua, hypridle.conf, hyprlock.conf, wallpaper.jpg
 config/hypr/scripts nightlight, osd, powermenu, wallpaper, screenshot, display-mode (Super+P), waybar (auto-restarts)
                     laptop panel is never disabled, only powered off, so a screen always exists
-config/waybar/      config.jsonc, style.css, mocha.css, scripts/updates.sh
+config/waybar/      config.jsonc, style.css, mocha.css, scripts/updates.sh, scripts/netspeed.sh
 config/swaync/      notification + control center
 config/rofi/        launcher theme
 config/alacritty/   terminal theme
@@ -78,6 +78,6 @@ Neovim keys are in [config/nvim/README.md](config/nvim/README.md). Hyprland:
 
 Left: launcher (right-click = clipboard) · workspaces · media (scroll = next/prev)
 Center: date (hover = calendar) · time capsule
-Right: CPU (hover to reveal RAM / temp / disk) · volume + mic · brightness · network · bluetooth · battery · updates · caffeine · night light · tray · notifications · power
+Right: CPU (hover to reveal RAM / temp / disk) · volume + mic · brightness · network · speed (down / up kbps) · bluetooth · battery · updates · caffeine · night light · tray · notifications · power
 
 Wallpaper: drop `~/Pictures/wallpaper.jpg` to override the bundled one.
