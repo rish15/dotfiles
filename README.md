@@ -78,6 +78,6 @@ Neovim keys are in [config/nvim/README.md](config/nvim/README.md). Hyprland:
 
 Left: launcher (right-click = clipboard) · workspaces · media (scroll = next/prev)
 Center: date (hover = calendar) · time capsule
-Right: CPU (hover to reveal RAM / temp / disk) · volume + mic · brightness · network · speed (down / up kbps) · bluetooth · battery · updates · caffeine · night light · tray · notifications · power
+Right: CPU (hover to reveal RAM / temp / disk) · volume + mic · brightness · network · speed (down / up, kbps → Mbps) · bluetooth · battery · updates · caffeine · night light · tray · notifications · power
 
 Wallpaper: drop `~/Pictures/wallpaper.jpg` to override the bundled one.

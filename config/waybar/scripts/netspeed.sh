@@ -1,11 +1,19 @@
 #!/usr/bin/env bash
-# Waybar: live download / upload speed in kbps, e.g. "120kbps / 100kbps".
+# Waybar: live download / upload speed, e.g. "120kbps / 100kbps" or "12.4Mbps / 850kbps".
 # Long-running: prints one JSON line every INTERVAL seconds.
 INTERVAL=2
 ICON=$''
 
 iface() {   # interface carrying the default route (wifi or ethernet), from the kernel table
     awk '$2=="00000000" {print $1; exit}' /proc/net/route
+}
+
+fmt() {     # kbps -> "850kbps" / "12.4Mbps" / "1.2Gbps"
+    awk -v k="$1" 'BEGIN {
+        if (k >= 1000000)   printf "%.1fGbps", k / 1000000
+        else if (k >= 1000) printf "%.1fMbps", k / 1000
+        else                printf "%dkbps",   k
+    }'
 }
 
 bytes() {   # rx tx for $1
@@ -24,8 +32,9 @@ while true; do
         down=$(( (rx - prx) * 8 / 1000 / INTERVAL ))
         up=$((   (tx - ptx) * 8 / 1000 / INTERVAL ))
         (( down < 0 )) && down=0; (( up < 0 )) && up=0
-        printf '{"text":"%s %skbps / %skbps","class":"active","tooltip":"%s\\n↓ download %s kbps\\n↑ upload %s kbps"}\n' \
-            "$ICON" "$down" "$up" "$i" "$down" "$up"
+        d=$(fmt "$down"); u=$(fmt "$up")
+        printf '{"text":"%s %s / %s","class":"active","tooltip":"%s\\n↓ download %s\\n↑ upload %s"}\n' \
+            "$ICON" "$d" "$u" "$i" "$d" "$u"
     fi
     prev_if=$i; prx=${rx:-0}; ptx=${tx:-0}
     sleep "$INTERVAL"
