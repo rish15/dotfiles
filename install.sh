@@ -47,6 +47,8 @@ PKGS=(
     jq socat libnotify pacman-contrib btop git
     # calendar popup (click the date / Super+C)
     yad
+    # desktop widget (clock + calendar on the wallpaper)
+    python-gobject gtk3 gtk-layer-shell
     # shell prompt
     zsh starship
     # editor (node: coc/prettier, rg: :Rg, go: vim-go, tree-sitter-cli+gcc: parsers)

@@ -136,6 +136,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd(scripts .. "wallpaper.sh")
     hl.exec_cmd(scripts .. "waybar.sh")
     hl.exec_cmd("swaync")
+    hl.exec_cmd(scripts .. "desktop-widget.py")
     hl.exec_cmd("nm-applet --indicator")
     hl.exec_cmd([[sh -c 'rm -f "$XDG_RUNTIME_DIR/ssh-agent.socket"; exec ssh-agent -D -a "$XDG_RUNTIME_DIR/ssh-agent.socket"']])
     hl.exec_cmd("wl-paste --watch cliphist store")
@@ -255,7 +256,7 @@ hl.window_rule({
 })
 
 -- Frosted glass behind the bar, launcher and notification center
-for _, ns in ipairs({ "waybar", "rofi", "swaync-control-center", "swaync-notification-window" }) do
+for _, ns in ipairs({ "waybar", "rofi", "swaync-control-center", "swaync-notification-window", "desktop-widget" }) do
     hl.layer_rule({ name = "blur-" .. ns, match = { namespace = ns }, blur = true, ignore_alpha = 0.3 })
 end
 
@@ -264,7 +265,21 @@ end
 ----------------------
 hl.bind(k("Return"),        exec(term))
 hl.bind(k("SHIFT + Q"),     hl.dsp.window.close())
-hl.bind(k("D"),             exec(menu))
+hl.bind(k("space"),         exec(menu))
+
+-- Desktop peek: Super+D jumps to an empty "desktop" workspace (wallpaper +
+-- desktop widget); Super+D again returns to exactly where you were.
+local peek_from = nil
+hl.bind(k("D"), function()
+    local ws = hl.get_active_workspace()
+    if ws and ws.name == "desktop" then
+        hl.dispatch(hl.dsp.focus({ workspace = peek_from and tostring(peek_from) or "previous" }))
+        peek_from = nil
+    else
+        peek_from = ws and ws.id or nil
+        hl.dispatch(hl.dsp.focus({ workspace = "name:desktop" }))
+    end
+end)
 hl.bind(k("V"),             exec("cliphist list | rofi -dmenu -p ' Clipboard' | cliphist decode | wl-copy"))
 hl.bind(k("SHIFT + C"),     exec("hyprctl reload"))
 hl.bind(k("SHIFT + E"),     exec(scripts .. "powermenu.sh"))

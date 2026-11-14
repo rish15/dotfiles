@@ -25,7 +25,8 @@ The installer symlinks every folder in `config/` into `~/.config/`. Existing con
 
 ```
 config/hypr/        hyprland.lua, hypridle.conf, hyprlock.conf, wallpaper.jpg
-config/hypr/scripts nightlight, osd, powermenu, wallpaper, screenshot, display-mode (Super+P), waybar (auto-restarts)
+config/hypr/scripts nightlight, osd, powermenu, wallpaper, screenshot, display-mode (Super+P), waybar (auto-restarts),
+                    desktop-widget.py (clock + calendar on the wallpaper)
                     laptop panel is never disabled, only powered off, so a screen always exists
 config/waybar/      config.jsonc, style.css, mocha.css, scripts/updates.sh, scripts/netspeed.sh
 config/swaync/      notification + control center
@@ -54,7 +55,8 @@ Neovim keys are in [config/nvim/README.md](config/nvim/README.md). Hyprland:
 | Key | Action |
 |---|---|
 | `Super+Return` | Terminal |
-| `Super+D` | Launcher |
+| `Super+Space` | Launcher |
+| `Super+D` | Desktop peek: show the desktop (clock + calendar widget); again to return |
 | `Super+V` | Clipboard history |
 | `Super+Shift+N` | Control center (notifications, toggles, media, sliders) |
 | `Super+N` | Toggle night light |

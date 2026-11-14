@@ -36,6 +36,7 @@
     },
 
     "hyprland/workspaces": {
+        "ignore-workspaces": ["desktop"],
         "format": "{icon}",
         "format-icons": {
             "active": "",
