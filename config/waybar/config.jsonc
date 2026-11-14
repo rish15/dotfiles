@@ -67,6 +67,7 @@
     "clock#date": {
         "format": "\uf073  {:%a, %d %b}",
         "on-click": "~/.config/waybar/scripts/calendar.sh",
+        "on-click-right": "~/.config/waybar/scripts/calendar.sh jump",
         "interval": 60,
         "tooltip-format": "<tt>{calendar}</tt>",
         "calendar": {
@@ -80,7 +81,7 @@
                 "today":    "<span color='#1e1e2e' background='#f5c2e7'><b> {} </b></span>"
             }
         },
-        "actions": { "on-scroll-up": "shift_down", "on-scroll-down": "shift_up", "on-click-right": "mode" }
+        "actions": { "on-scroll-up": "shift_down", "on-scroll-down": "shift_up" }
     },
 
     "clock": {
