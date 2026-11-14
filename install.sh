@@ -45,6 +45,8 @@ PKGS=(
     network-manager-applet bluez bluez-utils blueman
     # bar helpers
     jq socat libnotify pacman-contrib btop git
+    # calendar popup (click the date / Super+C)
+    yad
     # shell prompt
     zsh starship
     # editor (node: coc/prettier, rg: :Rg, go: vim-go, tree-sitter-cli+gcc: parsers)

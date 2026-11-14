@@ -246,6 +246,14 @@ hl.window_rule({
     float = true, center = true, pin = true, no_initial_focus = true,
 })
 
+-- Calendar popup from the bar (waybar/scripts/calendar.sh): floating, top-center
+hl.window_rule({
+    name  = "bar-calendar",
+    match = { title = "^(bar-calendar)$" },
+    float = true, pin = true,
+    move  = "(monitor_w*0.5)-(window_w*0.5) 56",
+})
+
 -- Frosted glass behind the bar, launcher and notification center
 for _, ns in ipairs({ "waybar", "rofi", "swaync-control-center", "swaync-notification-window" }) do
     hl.layer_rule({ name = "blur-" .. ns, match = { namespace = ns }, blur = true, ignore_alpha = 0.3 })
@@ -264,6 +272,7 @@ hl.bind(k("Escape"),        exec(scripts .. "powermenu.sh"))
 hl.bind(k("L"),     exec("pidof hyprlock || hyprlock >> /tmp/hyprlock.log 2>&1"))
 hl.bind(k("F"),             hl.dsp.window.fullscreen())
 hl.bind(k("SHIFT + space"), hl.dsp.window.float({ action = "toggle" }))
+hl.bind(k("C"),             exec("~/.config/waybar/scripts/calendar.sh"))
 hl.bind(k("N"),             exec(scripts .. "nightlight.sh toggle"))
 hl.bind(k("SHIFT + N"),     exec("swaync-client -t -sw"))
 -- Hide/show the bar instantly (SIGUSR1 toggles waybar's visibility without

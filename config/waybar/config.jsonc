@@ -66,6 +66,7 @@
     // ---------- center ----------
     "clock#date": {
         "format": "\uf073  {:%a, %d %b}",
+        "on-click": "~/.config/waybar/scripts/calendar.sh",
         "interval": 60,
         "tooltip-format": "<tt>{calendar}</tt>",
         "calendar": {
