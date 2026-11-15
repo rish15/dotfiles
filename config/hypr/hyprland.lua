@@ -107,6 +107,10 @@ hl.timer(function()
         end
         hl.dispatch(hl.dsp.focus({ monitor = EXT[1] }))
     end
+    -- (Re)start the desktop widget now that the right screen is focused; it
+    -- appears on the focused output, so starting it earlier put it on the
+    -- laptop panel that then went dark.
+    hl.exec_cmd("pkill -f 'hypr/scripts/desktop-widget.py'; exec " .. scripts .. "desktop-widget.py >/tmp/desktop-widget.log 2>&1")
 end, { timeout = 600, type = "oneshot" })
 
 -- External plugged/unplugged (or the DP monitor dropping out while locked):
@@ -136,7 +140,6 @@ hl.on("hyprland.start", function()
     hl.exec_cmd(scripts .. "wallpaper.sh")
     hl.exec_cmd(scripts .. "waybar.sh")
     hl.exec_cmd("swaync")
-    hl.exec_cmd(scripts .. "desktop-widget.py")
     hl.exec_cmd("nm-applet --indicator")
     hl.exec_cmd([[sh -c 'rm -f "$XDG_RUNTIME_DIR/ssh-agent.socket"; exec ssh-agent -D -a "$XDG_RUNTIME_DIR/ssh-agent.socket"']])
     hl.exec_cmd("wl-paste --watch cliphist store")
