@@ -110,7 +110,7 @@ hl.timer(function()
     -- (Re)start the desktop widget now that the right screen is focused; it
     -- appears on the focused output, so starting it earlier put it on the
     -- laptop panel that then went dark.
-    hl.exec_cmd("pkill -f 'hypr/scripts/desktop-widget.py'; exec " .. scripts .. "desktop-widget.py >/tmp/desktop-widget.log 2>&1")
+    hl.exec_cmd(scripts .. "desktop-widget.sh")
 end, { timeout = 600, type = "oneshot" })
 
 -- External plugged/unplugged (or the DP monitor dropping out while locked):
